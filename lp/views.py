@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
-from .forms import SettingsForm
+from .forms import SettingsForm, CandidatForm
 from .utils import lp_settings
 
 def index(request):
@@ -12,7 +12,19 @@ def login(request):
     return render(request, 'lp/login.html', {})
 
 def apply(request):
-    return render(request, 'lp/apply.html', {})
+    if request.method == 'POST':
+        form = CandidatForm(request.POST)
+        if form.is_valid():
+            # Success, we save candidate
+            candidate = form.save()
+            # Then redirect to confirmation notice
+            # TODO: Make an actual confirmation notice
+            return HttpResponseRedirect(reverse('lp:index'))
+    else:
+        form = CandidatForm()
+    return render(request, 'lp/apply.html', {
+        'form': form
+    })
 
 def admin_settings(request):
     user = request.user
@@ -34,7 +46,7 @@ def admin_settings(request):
             # Show a success message
             messages.success(request, 'Paramètres enregistrés avec succès.')
             # Then redirect to same page...
-            return HttpResponseRedirect(reverse('admin_settings'))
+            return HttpResponseRedirect(reverse('lp:admin_settings'))
     else:
         settings = lp_settings()
         form = SettingsForm(instance=settings)

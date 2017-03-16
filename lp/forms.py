@@ -1,5 +1,5 @@
 from django import forms
-from .models import Settings
+from .models import Settings, Candidat
 
 class SettingsForm(forms.ModelForm):
     class Meta:
@@ -15,3 +15,8 @@ class SettingsForm(forms.ModelForm):
         if age < 2:
             raise forms.ValidationError('Âge maximal du Bac doit être supérieur ou égale à 2')
         return age
+
+class CandidatForm(forms.ModelForm):
+    class Meta:
+        model = Candidat
+        exclude = ['user', 'jeton_validation']
