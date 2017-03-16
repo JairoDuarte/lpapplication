@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from .forms import SettingsForm
-from .util import lp_settings
+from .utils import lp_settings
 
 def index(request):
     return render(request, 'lp/index.html', {})
@@ -16,6 +16,13 @@ def apply(request):
 
 def admin_settings(request):
     user = request.user
+    # Check if staff user is logged
+    if not user.is_staff:
+        from django.contrib.auth.views import redirect_to_login
+        return redirect_to_login(
+            request.get_full_path(),
+            reverse('admin:login', current_app='lp')
+        )
     if request.method == 'POST':
         form = SettingsForm(request.POST)
         if form.is_valid():
