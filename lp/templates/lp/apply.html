@@ -1,9 +1,21 @@
 {% extends "lp/base.html" %}
+{% load bootstrap3 %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" name="submit" value="Confirmer" />
-</form>
+<div class="container">
+    <div class="signup-container panel panel-default">
+        <div class="panel-heading">Formulaire de préinscription</div>
+        <form method="post" class="form-horizontal preinscription-form panel-body">
+            {% csrf_token %}
+            {% bootstrap_form form layout='horizontal' %}
+            <div class="text-right">
+                {% buttons %}
+                    <button type="submit" class="btn btn-lg btn-primary">
+                        {% bootstrap_icon 'star' %} Confirmer
+                    </button>
+                {% endbuttons %}
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock content %}

@@ -1,0 +1,101 @@
+.login-page {
+    height: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.signup-container, .success-container, .confirm-container {
+    margin: 15px 0;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    margin: 15px 0;
+}
+
+.login-page .panel {
+    border-radius: 2px;
+}
+
+.login-page::before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    /*margin-right: -0.25em;*/
+}
+
+.login-page .form-error {
+    padding: 12px 30px;
+    color: #a94442;
+}
+
+.login-page .form-error.bg-danger {
+    border: 1px solid #a94442;
+    border-radius: 2px;
+}
+
+.login-page .post-panel-link {
+    display: block;
+    border-bottom: 1px solid #DDD;
+    padding: 15px;
+}
+
+.login-page .post-panel-link:first-child {
+    padding-top: 0;
+}
+
+.login-page .post-panel-link:last-child {
+    border-bottom: none;
+}
+
+.preinscription-form {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.date-input-group {
+    margin: 0;
+    padding: 0;
+}
+
+.date-input-group div.day {
+    padding-right: 0;
+}
+
+.date-input-group div.month {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.date-input-group div.year {
+    padding-left: 0;
+}
+
+.date-input-group div.day select {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.date-input-group div.year select {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+}
+
+.date-input-group div.month select {
+    border-radius: 0;
+    border-left: none;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    select#id_semester_1_year, select#id_semester_2_year, select#id_semester_3_year, select#id_semester_4_year {
+        margin: .5em 0;
+    }
+}

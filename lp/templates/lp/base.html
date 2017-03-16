@@ -1,11 +1,31 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>{% block page_title %}Inscription LP{% endblock page_title %}</title>
-    {% block extra_style %}{% endblock extra_style %}
+
+    {# Bootstrap #}
+    <link rel="stylesheet" href="{% static 'lp/css/bootstrap.min.css' %}">
+    {# Main style #}
+    <link rel="stylesheet" href="{% static 'lp/css/style.css' %}">
+
+    {% block extra_css %}{% endblock extra_css %}
 </head>
 <body>
 {% block content %} {% endblock content %}
-{% block extra_javascript %}{% endblock extra_javascript %}
+
+{% block javascript %}
+{# jQuery #}
+<script type="text/javascript" src="{% static 'lp/js/jquery-3.1.1.min.js' %}"></script>
+{# Bootstrap #}
+<script type="text/javascript" src="{% static 'lp/js/bootstrap.min.js' %}"></script>
+{% endblock javascript %}
+{% block extra_js %}
+{% endblock extra_js %}
 </body>
 </html>

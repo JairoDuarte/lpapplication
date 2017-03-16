@@ -97,8 +97,8 @@ class MentionBac(models.Model):
         return self.libelle
 
 class Candidat(models.Model):
-    cin = models.CharField("code d'identification national (CIN)", max_length=50, unique=True)
-    cne = models.CharField("code national d'étudiant (CNE)", max_length=50, unique=True)
+    cin = models.CharField("code d'Identification National (CIN)", max_length=50, unique=True)
+    cne = models.CharField("code National d'Étudiant (CNE)", max_length=50, unique=True)
     nom = models.CharField(max_length=100)
     prenom = models.CharField('prénom', max_length=100)
     nationalite = models.CharField('nationalité', max_length=100)
@@ -106,8 +106,8 @@ class Candidat(models.Model):
     pays_naissance = models.CharField('pays de naissance', max_length=100)
     date_naissance = models.DateField('date de naissance')
     email = models.CharField(max_length=80, unique=True)
-    telephone_gsm = models.CharField('no. téléphone GSM', max_length=20, unique=True)
-    telephone_fixe = models.CharField('no. téléphone fixe', max_length=20, blank=True)
+    telephone_gsm = models.CharField('no. de téléphone GSM', max_length=20, unique=True)
+    telephone_fixe = models.CharField('no. de téléphone fixe', max_length=20, blank=True)
     adresse_residence = models.CharField('adresse de résidence', max_length=255)
     ville_residence = models.CharField('ville de résidence', max_length=100)
     pays_residence = models.CharField('pays de résidence', max_length=100)
