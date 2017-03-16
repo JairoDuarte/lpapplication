@@ -1,0 +1,7 @@
+{% extends "lp/base.html" %}
+
+{% block content %}
+    Index<br/>
+    <a href="{% url 'lp:login' %}">Connexion</a><br/>
+    <a href="{% url 'lp:apply' %}">Inscription</a>
+{% endblock content %}

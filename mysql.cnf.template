@@ -1,0 +1,6 @@
+[client]
+host = localhost
+database = database_name
+user = root
+password =
+default-character-set = utf8
