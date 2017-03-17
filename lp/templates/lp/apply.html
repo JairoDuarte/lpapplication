@@ -12,3 +12,115 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+    (function(candidateDegreeType, candidateDegreeSpecialty, candidateDegreeOption, degreeTree) {
+        var degreeTypeSelect = $('#id_type_diplome'),
+            degreeSpecialtySelect = $('#id_filiere_diplome'),
+            degreeOptionSelect = $('#id_option_diplome');
+
+        degreeTypeSelect.empty();
+        for (var typeVal in degreeTree) {
+            var degreeType = degreeTree[typeVal];
+            $('<option/>')
+                .attr('value', typeVal)
+                .text(degreeType.label)
+                .prop('selected', candidateDegreeType == typeVal)
+                .appendTo(degreeTypeSelect);
+        }
+
+        var otherSelect = $('<option/>')
+            .attr('value', '-1')
+            .text('Autre...')
+            .prop('selected', candidateDegreeType == '-1')
+            .appendTo(degreeTypeSelect);
+
+        function degreeTypeChanged() {
+            var newVal = degreeTypeSelect.val();
+
+            if (newVal == '-1') {
+                $('#field_type_diplome_autre').removeClass('hidden');
+                degreeSpecialtySelect.empty().prop('disabled', true);
+                degreeOptionSelect.empty().prop('disabled', true);
+            }
+            else {
+                $('#field_type_diplome_autre').addClass('hidden');
+                var type = degreeTree[newVal];
+                if (type) {
+                    var specialties = type.filieres;
+                    degreeSpecialtySelect.empty();
+
+                    var empty = true;
+                    for (var specialtyVal in specialties) {
+                        var specialty = specialties[specialtyVal];
+                        $('<option/>')
+                                .attr('value', specialtyVal)
+                                .text(specialty.label)
+                                .prop('selected', candidateDegreeSpecialty == specialtyVal)
+                                .appendTo(degreeSpecialtySelect);
+                        empty = false;
+                    }
+
+                    degreeSpecialtySelect.prop('disabled', empty);
+                }
+                else {
+                    degreeSpecialtySelect.empty().prop('disabled', true);
+                }
+            }
+
+            candidateDegreeSpecialty = undefined;
+        }
+
+        function degreeSpecialtyChanged() {
+            var typeVal = degreeTypeSelect.val();
+            var newVal = degreeSpecialtySelect.val();
+
+            if (newVal == '-1') {
+                $('#field_filiere_diplome_autre').removeClass('hidden');
+                degreeOptionSelect.empty().prop('disabled', true);
+            }
+            else {
+                $('#field_filiere_diplome_autre').addClass('hidden');
+                var specialty = degreeTree[typeVal] && degreeTree[typeVal].filieres[newVal];
+                if (specialty) {
+                    var options = specialty.options;
+                    degreeOptionSelect.empty();
+
+                    var empty = true;
+                    for (var optionVal in options) {
+                        var option = options[optionVal];
+                        $('<option/>')
+                            .attr('value', optionVal)
+                            .text(option)
+                            .prop('selected', candidateDegreeOption == optionVal)
+                            .appendTo(degreeOptionSelect);
+                        empty = false;
+                    }
+
+                    degreeOptionSelect.prop('disabled', empty);
+                }
+                else {
+                    degreeOptionSelect.empty().prop('disabled', true);
+                }
+            }
+
+            candidateDegreeOption = undefined;
+        }
+
+        function degreeOptionChanged() {
+            // ?
+        }
+
+        degreeTypeSelect.on('change', degreeTypeChanged);
+        degreeSpecialtySelect.on('change', degreeSpecialtyChanged);
+        degreeOptionSelect.on('change', degreeOptionChanged);
+        degreeTypeChanged();
+        degreeSpecialtyChanged();
+        degreeOptionChanged();
+    })(
+        '{{ type_diplome }}', '{{ filiere_diplome }}', '{{ option_diplome }}',
+        {{ filieres_json|safe }}
+    );
+</script>
+{% endblock extra_js  %}
