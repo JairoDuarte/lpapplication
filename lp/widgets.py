@@ -43,3 +43,13 @@ class SchoolYearWidget(widgets.Select):
             for year in range(max_year, min_year, -1)
         ]
         super(SchoolYearWidget, self).__init__(attrs=attrs, choices=_choices)
+
+class CustomModelSelect(widgets.Select):
+    def __init__(self, model, is_optional=False, attrs=None):
+        _choices = [
+            (str(obj.pk), str(obj))
+            for obj in model.objects.all()
+        ]
+        if is_optional:
+            _choices.append(('', 'Autre...'))
+        super(CustomModelSelect, self).__init__(attrs=attrs, choices=_choices)
