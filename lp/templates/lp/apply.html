@@ -6,7 +6,7 @@
         <div class="panel-heading">Formulaire de préinscription</div>
         <form method="post" class="form-horizontal preinscription-form panel-body">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form|safe }}
             <p class="text-right"><button type="submit">Confirmer</button></p>
         </form>
     </div>

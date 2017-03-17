@@ -46,6 +46,7 @@ class CandidatForm(forms.ModelForm):
         self.fields['date_naissance'].widget = birthdate_widget
         self.fields['pays_naissance'].widget = countries_input
         self.fields['email'].widget = widgets.EmailInput()
+        self.fields['adresse_residence'].widget = widgets.Textarea(attrs={'rows': 3})
         self.fields['pays_residence'].widget = countries_input
         self.fields['note_s1'].widget = mark_input
         self.fields['note_s2'].widget = mark_input
@@ -64,6 +65,27 @@ class CandidatForm(forms.ModelForm):
         self.fields['type_bac'].widget = CustomModelSelect(models.TypeBac, True)
         self.fields['mention_bac'].widget = CustomModelSelect(models.MentionBac, False)
         self.fields['filiere_choisie'].widget = empty_select
+    def __str__(self):
+        html = ''
+        for title, fields in CandidatForm.fieldsets:
+            html += '<h2>' + title + '</h2>'
+            for fieldname in fields:
+                field = self[fieldname]
+                html += '<div class="field_%s"><label for="%s">%s :</label><div class="widget">%s</div>' % (fieldname, field.id_for_label, field.label, field.as_widget())
+                errors = field.errors
+                if len(errors) > 0:
+                    html += '<ul class="errors">'
+                    for error in errors:
+                        html += '<li>%s</li>' % error
+                    html += '</ul>'
+                html += '</div>'
+        return html
     class Meta:
         model = models.Candidat
         exclude = ['user', 'jeton_validation']
+    fieldsets = (
+        ('Informations personnelles', ('cin', 'cne', 'nom', 'prenom', 'nationalite', 'ville_naissance', 'pays_naissance', 'date_naissance', 'email', 'telephone_gsm', 'telephone_fixe', 'adresse_residence', 'ville_residence', 'pays_residence',)),
+        ('Informations sur le diplôme', ('note_s1', 'annee_s1', 'note_s2', 'annee_s2', 'note_a1', 'note_s3', 'annee_s3', 'note_s4', 'annee_s4', 'note_a2', 'type_diplome', 'type_diplome_autre', 'filiere_diplome', 'option_diplome',)),
+        ('Informations sur le Bac', ('type_bac', 'type_bac_autre', 'annee_bac', 'mention_bac',)),
+        ('Choix de la filière', ('filiere_choisie',)),
+    )
