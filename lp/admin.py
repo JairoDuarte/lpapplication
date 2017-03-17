@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import User
+from . import models
 
 class UserCreationForm(forms.ModelForm):
     """
@@ -14,7 +14,7 @@ class UserCreationForm(forms.ModelForm):
     password2 = forms.CharField(label='Confirmation de mot de passe', widget=forms.PasswordInput)
 
     class Meta:
-        model = User
+        model = models.User
         fields = ('email',)
 
     def clean_password2(self):
@@ -42,7 +42,7 @@ class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
 
     class Meta:
-        model = User
+        model = models.User
         fields = ('email', 'password')
 
     def clean_password(self):
@@ -69,5 +69,17 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
-admin.site.register(User, UserAdmin)
+admin.site.register(models.User, UserAdmin)
+
+# TODO: Some of these need a custom form (candidat...)
+admin.site.register(models.BaremeAge)
+admin.site.register(models.BaremeAnneesDiplome)
+admin.site.register(models.Filiere)
+admin.site.register(models.TypeDiplome)
+admin.site.register(models.FiliereDiplome)
+admin.site.register(models.OptionDiplome)
+admin.site.register(models.TypeBac)
+admin.site.register(models.MentionBac)
+admin.site.register(models.Candidat)
+
 admin.site.unregister(Group)

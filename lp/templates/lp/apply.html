@@ -1,5 +1,4 @@
 {% extends "lp/base.html" %}
-{% load bootstrap3 %}
 
 {% block content %}
 <div class="container">
@@ -7,14 +6,8 @@
         <div class="panel-heading">Formulaire de préinscription</div>
         <form method="post" class="form-horizontal preinscription-form panel-body">
             {% csrf_token %}
-            {% bootstrap_form form layout='horizontal' %}
-            <div class="text-right">
-                {% buttons %}
-                    <button type="submit" class="btn btn-lg btn-primary">
-                        {% bootstrap_icon 'star' %} Confirmer
-                    </button>
-                {% endbuttons %}
-            </div>
+            {{ form.as_p }}
+            <p class="text-right"><button type="submit">Confirmer</button></p>
         </form>
     </div>
 </div>

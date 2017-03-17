@@ -59,7 +59,7 @@ class BaremeAge(models.Model):
     age_max = models.PositiveSmallIntegerField('age max.', unique=True)
     note_preselection = models.DecimalField(max_digits=4, decimal_places=2)
 
-class BaremeAnnesDiplome(models.Model):
+class BaremeAnneesDiplome(models.Model):
     annees_max = models.PositiveSmallIntegerField('années diplome max.', unique=True)
     note_preselection = models.DecimalField(max_digits=4, decimal_places=2)
 

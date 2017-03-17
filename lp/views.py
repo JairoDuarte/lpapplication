@@ -16,12 +16,16 @@ def apply(request):
         form = CandidatForm(request.POST)
         if form.is_valid():
             # Success, we save candidate
-            candidate = form.save()
+            candidat = form.save()
             # Then redirect to confirmation notice
             # TODO: Make an actual confirmation notice
             return HttpResponseRedirect(reverse('lp:index'))
     else:
-        form = CandidatForm()
+        form = CandidatForm(initial={
+            'nationalite': 'maroc',
+            'pays_naissance': 'maroc',
+            'pays_residence': 'maroc',
+        })
     return render(request, 'lp/apply.html', {
         'form': form
     })
@@ -46,7 +50,7 @@ def admin_settings(request):
             # Show a success message
             messages.success(request, 'Paramètres enregistrés avec succès.')
             # Then redirect to same page...
-            return HttpResponseRedirect(reverse('lp:admin_settings'))
+            return HttpResponseRedirect(reverse('admin_settings'))
     else:
         settings = lp_settings()
         form = SettingsForm(instance=settings)
