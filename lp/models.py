@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
-from decimal import Decimal
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -165,8 +164,8 @@ class Candidat(models.Model):
     note_a2 = models.DecimalField('note de la deuxième année', max_digits=4, decimal_places=2)
     type_diplome = models.ForeignKey(TypeDiplome, on_delete=models.SET_NULL, null=True)
     type_diplome_autre = models.CharField('autre', max_length=100, blank=True)
-    filiere_diplome = models.ForeignKey(FiliereDiplome, on_delete=models.SET_NULL, null=True)
-    option_diplome = models.ForeignKey(OptionDiplome, on_delete=models.SET_NULL, null=True)
+    filiere_diplome = models.ForeignKey(FiliereDiplome, on_delete=models.SET_NULL, null=True, blank=True)
+    option_diplome = models.ForeignKey(OptionDiplome, on_delete=models.SET_NULL, null=True, blank=True)
     type_bac = models.ForeignKey(TypeBac, on_delete=models.SET_NULL, null=True)
     type_bac_autre = models.CharField('autre', max_length=100, blank=100)
     annee_bac = models.PositiveSmallIntegerField("année d'obtention du bac")
@@ -174,17 +173,7 @@ class Candidat(models.Model):
     filiere_choisie = models.ForeignKey(Filiere, on_delete=models.SET_NULL, null=True)
     jeton_validation = models.CharField(max_length=16, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    def note_preselection(self):
-        """
-        Retourne la note calculée de préselection
-        TODO: FIXER les baremes
-        """
-        return Decimal('0.25') * self.note_a1 + \
-            Decimal('0.25') * self.note_a2 + \
-            Decimal('0.15') * self.mention_bac.note_preselection + \
-            Decimal('0.15') * Decimal('15') + \
-            Decimal('0.20') * Decimal('15')
-    note_preselection.short_description = 'Note de préselection'
+    note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
     def age(self):
         """
         Retourne l'age actuel du candidat

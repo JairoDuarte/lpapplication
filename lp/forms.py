@@ -1,6 +1,7 @@
 from django import forms
 from django.utils import timezone
 from django.forms import widgets
+from decimal import Decimal
 
 from . import models
 from .utils import Countries, lp_settings
@@ -84,9 +85,9 @@ class CandidatForm(forms.ModelForm):
             for filiere_diplome in type_diplome.filierediplome_set.all():
                 options_diplome = []
                 for option_diplome in filiere_diplome.optiondiplome_set.all():
-                    options_diplome.append('"%i":"%s"' % (option_diplome.pk, option_diplome.libelle))
-                filieres_diplome.append('"%i": {"label": "%s", "options": {%s}}' % (filiere_diplome.pk, filiere_diplome.libelle, ','.join(options_diplome)))
-            types_diplome.append('"%i": {"label": "%s", "filieres": {%s}}' % (type_diplome.pk, type_diplome.libelle, ','.join(filieres_diplome)))
+                    options_diplome.append('"%i":"%s"' % (option_diplome.pk, option_diplome.libelle.replace('"', '\\\"')))
+                filieres_diplome.append('"%i": {"label": "%s", "options": {%s}}' % (filiere_diplome.pk, filiere_diplome.libelle.replace('"', '\\\"'), ','.join(options_diplome)))
+            types_diplome.append('"%i": {"label": "%s", "filieres": {%s}}' % (type_diplome.pk, type_diplome.libelle.replace('"', '\\\"'), ','.join(filieres_diplome)))
         arbre_diplome_json = '{%s}' % ','.join(types_diplome)
         # Préparer la liste des filières et leurs diplômes corréspondants
         filieres = []
@@ -128,9 +129,21 @@ class CandidatForm(forms.ModelForm):
                     html += '</ul>'
                 html += '</div>'
         return html
+    def save(self, commit=True):
+        candidat = super(CandidatForm, self).save(commit=False)
+        # Calculer la note de préselection
+        candidat.note_preselection = \
+            Decimal('0.25') * candidat.note_a1 + \
+            Decimal('0.25') * candidat.note_a2 + \
+            Decimal('0.15') * candidat.mention_bac.note_preselection + \
+            Decimal('0.15') * Decimal('20') + \
+            Decimal('0.20') * Decimal('20')
+        if commit:
+            candidat.save()
+        return candidat
     class Meta:
         model = models.Candidat
-        exclude = ['user', 'jeton_validation']
+        exclude = ['user', 'jeton_validation', 'note_preselection']
     fieldsets = (
         ('Informations personnelles', ('cin', 'cne', 'nom', 'prenom', 'nationalite', 'ville_naissance', 'pays_naissance', 'date_naissance', 'email', 'telephone_gsm', 'telephone_fixe', 'adresse_residence', 'ville_residence', 'pays_residence',)),
         ('Informations sur le diplôme', ('note_s1', 'annee_s1', 'note_s2', 'annee_s2', 'note_a1', 'note_s3', 'annee_s3', 'note_s4', 'annee_s4', 'note_a2', 'type_diplome', 'type_diplome_autre', 'filiere_diplome', 'option_diplome',)),
