@@ -4,7 +4,7 @@ from django.forms import widgets
 class DateSelectorWidget(widgets.MultiWidget):
     def __init__(self, min_year, max_year, attrs=None):
         # Create choices for days, months and years
-        days = [(day, day) for day in range(1, 31)]
+        days = [(day, day) for day in range(1, 32)]
         months = [
             (1, 'Janvier'), (2, 'Février'), (3, 'Mars'), (4, 'Avril'),
             (5, 'Mai'), (6, 'Juin'), (7, 'Juillet'), (8, 'Août'),
