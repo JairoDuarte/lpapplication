@@ -1,19 +1,9 @@
-{% extends "lp/base.html" %}
+{% extends "admin/change_form.html" %}
+{% load static %}
 
-{% block content %}
-<div class="container">
-    <div class="signup-container panel panel-default">
-        <div class="panel-heading">Formulaire de préinscription</div>
-        <form method="post" class="form-horizontal preinscription-form panel-body">
-            {% csrf_token %}
-            {{ form|safe }}
-            <p class="text-right"><button type="submit">Confirmer</button></p>
-        </form>
-    </div>
-</div>
-{% endblock content %}
-
-{% block extra_js %}
+{% block admin_change_form_document_ready %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'lp/js/jquery-3.1.1.min.js' %}"></script>
     <script>
         (function(
             diplomeChoisi, filiereDiplomeChoisie, optionDiplomeChoisie,
@@ -160,4 +150,4 @@
             '{{ filiere_choisie }}', {{ arbre_diplome_json|safe }}, {{ filieres_json|safe }}
         );
     </script>
-{% endblock extra_js %}
+{% endblock %}

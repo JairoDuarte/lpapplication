@@ -32,6 +32,8 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     objects = MyUserManager()
     USERNAME_FIELD = 'email'
+    class Meta:
+        verbose_name = 'utilisateur'
     def get_full_name(self):
         return self.email
     def get_short_name(self):
@@ -57,47 +59,83 @@ class Settings(models.Model):
 
 class BaremeAge(models.Model):
     age_max = models.PositiveSmallIntegerField('age max.', unique=True)
-    note_preselection = models.DecimalField(max_digits=4, decimal_places=2)
+    note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
+    def __str__(self):
+        return 'Âge %i (Note: %g)' % (self.age_max, self.note_preselection)
+    class Meta:
+        verbose_name = "barème d'âge"
+        verbose_name_plural = "barème d'âge"
 
 class BaremeAnneesDiplome(models.Model):
     annees_max = models.PositiveSmallIntegerField('années diplome max.', unique=True)
-    note_preselection = models.DecimalField(max_digits=4, decimal_places=2)
+    note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
+    def __str__(self):
+        return 'Années %i (Note: %g)' % (self.annees_max, self.note_preselection)
+    class Meta:
+        verbose_name = "barème d'années de diplôme"
+        verbose_name_plural = "barème d'années de diplôme"
 
 class TypeDiplome(models.Model):
-    libelle = models.CharField(max_length=100, unique=True)
+    libelle = models.CharField('libellé', max_length=100, unique=True)
     def __str__(self):
         return self.libelle
+    class Meta:
+        verbose_name = 'type de diplôme'
+        verbose_name_plural = 'types de diplôme'
 
 class FiliereDiplome(models.Model):
-    libelle = models.CharField(max_length=100, unique=True)
+    libelle = models.CharField('libellé', max_length=100, unique=True)
     type_diplome = models.ForeignKey(TypeDiplome, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.type_diplome) + ' » ' + self.libelle
+    def type_diplome_libelle(self):
+        return self.type_diplome.libelle
+    type_diplome_libelle.short_description = 'Type de diplôme'
+    class Meta:
+        verbose_name = 'filière de diplôme'
+        verbose_name_plural = 'filières de diplôme'
 
 class OptionDiplome(models.Model):
-    libelle = models.CharField(max_length=100, unique=True)
+    libelle = models.CharField('libellé', max_length=100, unique=True)
     filiere_diplome = models.ForeignKey(FiliereDiplome, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.filiere_diplome) + ' » ' + self.libelle
+    def type_diplome_libelle(self):
+        return self.filiere_diplome.type_diplome_libelle()
+    type_diplome_libelle.short_description = 'Type de diplôme'
+    def filiere_diplome_libelle(self):
+        return self.filiere_diplome.libelle
+    filiere_diplome_libelle.short_description = 'Filière de diplôme'
+    class Meta:
+        verbose_name = 'option de diplôme'
+        verbose_name_plural = 'options de diplôme'
 
 class TypeBac(models.Model):
-    libelle = models.CharField(max_length=100, unique=True)
+    libelle = models.CharField('libellé', max_length=100, unique=True)
     def __str__(self):
         return self.libelle
+    class Meta:
+        verbose_name = 'type de Bac'
+        verbose_name_plural = 'types de Bac'
 
 class MentionBac(models.Model):
-    libelle = models.CharField(max_length=100, unique=True)
-    note_preselection = models.DecimalField(max_digits=4, decimal_places=2)
+    libelle = models.CharField('libellé', max_length=100, unique=True)
+    note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
     def __str__(self):
         return self.libelle
+    class Meta:
+        verbose_name = 'mention de Bac'
+        verbose_name_plural = 'mentions de Bac'
 
 class Filiere(models.Model):
-    libelle = models.CharField(max_length=100, unique=True)
+    libelle = models.CharField('libellé', max_length=100, unique=True)
     types_diplome = models.ManyToManyField(TypeDiplome, blank=True)
     filieres_diplome = models.ManyToManyField(FiliereDiplome, blank=True)
     options_diplome = models.ManyToManyField(OptionDiplome, blank=True)
     def __str__(self):
         return self.libelle
+    class Meta:
+        verbose_name = 'filière'
 
 class Candidat(models.Model):
     cin = models.CharField("code d'Identification National (CIN)", max_length=50, unique=True)
@@ -141,6 +179,7 @@ class Candidat(models.Model):
         TODO: FIXER les baremes
         """
         return 0.25 * self.note_a1 + 0.25 * self.note_a2 + 0.15 * self.mention_bac.note_preselection * 0.15 * 20 + 0.20 * 20
+    note_preselection.short_description = 'Note de préselection'
     def age(self):
         """
         Retourne l'age actuel du candidat
