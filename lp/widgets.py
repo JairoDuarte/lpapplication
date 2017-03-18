@@ -30,11 +30,11 @@ class DateSelectorWidget(widgets.MultiWidget):
             for i, widget in enumerate(self.widgets)
         ]
         try:
-            D = date(day=int(datelist[0]), month=int(datelist[1]), year=int(datelist[2]))
+            d = date(day=int(datelist[0]), month=int(datelist[1]), year=int(datelist[2]))
         except ValueError:
             return ''
         else:
-            return str(D)
+            return d
 
 class SchoolYearWidget(widgets.Select):
     def __init__(self, min_year, max_year, attrs=None):

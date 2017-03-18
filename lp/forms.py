@@ -66,19 +66,12 @@ class CandidatForm(forms.ModelForm):
         self.fields['type_bac'].widget = CustomModelSelect(models.TypeBac, True)
         self.fields['mention_bac'].widget = CustomModelSelect(models.MentionBac, False)
         self.fields['filiere_choisie'].widget = empty_select
-    def context_data(request):
-        if request.method == 'POST':
-            form_type_diplome = request.POST['type_diplome']
-            form_filiere_diplome = request.POST['filiere_diplome']
-            form_option_diplome = request.POST['option_diplome']
-            form_filiere_choisie = request.POST['form_filiere_choisie']
-        else:
-            form_type_diplome = ''
-            form_filiere_diplome = ''
-            form_option_diplome = ''
-            form_filiere_choisie = ''
+    def context_data(self):
+        form_type_diplome = self['type_diplome'].value()
+        form_filiere_diplome = self['filiere_diplome'].value()
+        form_option_diplome = self['option_diplome'].value()
+        form_filiere_choisie = self['filiere_choisie'].value()
         # Préparer la liste des types, filières et options de diplômes
-        # TODO: names need quote escaping
         types_diplome = []
         for type_diplome in models.TypeDiplome.objects.all():
             filieres_diplome = []

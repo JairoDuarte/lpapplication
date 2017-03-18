@@ -91,7 +91,7 @@ class CandidatAdmin(admin.ModelAdmin):
     change_form_template = 'admin/change_form_candidat.html'
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
-        context.update(self.form.context_data(request))
+        context.update(context['adminform'].form.context_data())
         return super(CandidatAdmin, self).render_change_form(request, context, add, change, form_url, obj)
 
 class FiliereDiplomeAdmin(admin.ModelAdmin):

@@ -25,7 +25,7 @@ def apply(request):
     else:
         form = CandidatForm()
     # Préparer le contexte
-    context = CandidatForm.context_data(request)
+    context = form.context_data()
     context.update({'form': form})
     # Afficher
     return render(request, 'lp/apply.html', context)
