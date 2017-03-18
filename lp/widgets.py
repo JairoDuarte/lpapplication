@@ -51,5 +51,5 @@ class CustomModelSelect(widgets.Select):
             for obj in model.objects.all()
         ]
         if is_optional:
-            _choices.append(('', 'Autre...'))
+            _choices.append(('-1', 'Autre...'))
         super(CustomModelSelect, self).__init__(attrs=attrs, choices=_choices)

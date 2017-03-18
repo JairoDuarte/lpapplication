@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
+from decimal import Decimal
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -178,7 +179,11 @@ class Candidat(models.Model):
         Retourne la note calculée de préselection
         TODO: FIXER les baremes
         """
-        return 0.25 * self.note_a1 + 0.25 * self.note_a2 + 0.15 * self.mention_bac.note_preselection * 0.15 * 20 + 0.20 * 20
+        return Decimal('0.25') * self.note_a1 + \
+            Decimal('0.25') * self.note_a2 + \
+            Decimal('0.15') * self.mention_bac.note_preselection + \
+            Decimal('0.15') * Decimal('15') + \
+            Decimal('0.20') * Decimal('15')
     note_preselection.short_description = 'Note de préselection'
     def age(self):
         """

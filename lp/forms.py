@@ -119,7 +119,7 @@ class CandidatForm(forms.ModelForm):
             html += '<h2>' + title + '</h2>'
             for fieldname in fields:
                 field = self[fieldname]
-                html += '<div id="field-%s"><label for="%s">%s :</label><div class="widget">%s</div>' % (fieldname, field.id_for_label, field.label, field.as_widget())
+                html += '<div class="field-%s"><label for="%s">%s :</label><div class="widget">%s</div>' % (fieldname, field.id_for_label, field.label, field.as_widget())
                 errors = field.errors
                 if len(errors) > 0:
                     html += '<ul class="errors">'

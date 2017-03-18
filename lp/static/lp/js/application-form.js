@@ -5,7 +5,8 @@ window._initApplicationForm = window._initApplictaionForm || function(
     var typeDiplomeSelect = $('#id_type_diplome'),
         filiereDiplomeSelect = $('#id_filiere_diplome'),
         optionDiplomeSelect = $('#id_option_diplome'),
-        filieresSelect = $('#id_filiere_choisie');
+        filieresSelect = $('#id_filiere_choisie'),
+        typeBacSelect = $('#id_type_bac');
 
     // On remplie la liste des types de diplomes
     typeDiplomeSelect.empty();
@@ -20,21 +21,21 @@ window._initApplicationForm = window._initApplictaionForm || function(
     var otherSelect = $('<option/>')
         .attr('value', '-1')
         .text('Autre...')
-        .prop('selected', diplomeChoisi == '')
+        .prop('selected', diplomeChoisi == '-1')
         .appendTo(typeDiplomeSelect);
 
     // On remplie la liste des filières
     function updateFilieresDiplome() {
         var newVal = typeDiplomeSelect.val();
 
-        if (newVal == '') {
+        if (newVal == '-1') {
             // Si l'on sélectionne le choix `Autres...`
-            $('#field-type_diplome_autre').removeClass('hidden');
+            $('.field-type_diplome_autre').removeClass('hidden');
             filiereDiplomeSelect.empty().prop('disabled', true);
             optionDiplomeSelect.empty().prop('disabled', true);
         }
         else {
-            $('#field-type_diplome_autre').addClass('hidden');
+            $('.field-type_diplome_autre').addClass('hidden');
             var type = arbreDiplome[newVal];
             if (type) {
                 var specialties = type.filieres;
@@ -67,13 +68,13 @@ window._initApplicationForm = window._initApplictaionForm || function(
         var typeVal = typeDiplomeSelect.val();
         var newVal = filiereDiplomeSelect.val();
 
-        if (newVal == '') {
+        if (newVal == '-1') {
             // Si l'on sélectionne le choix `Autres...`
-            $('#field-filiere_diplome_autre').removeClass('hidden');
+            $('.field-filiere_diplome_autre').removeClass('hidden');
             optionDiplomeSelect.empty().prop('disabled', true);
         }
         else {
-            $('#field-filiere_diplome_autre').addClass('hidden');
+            $('.field-filiere_diplome_autre').addClass('hidden');
             var specialty = arbreDiplome[typeVal] && arbreDiplome[typeVal].filieres[newVal];
             if (specialty) {
                 var options = specialty.options;
@@ -138,4 +139,16 @@ window._initApplicationForm = window._initApplictaionForm || function(
     filiereDiplomeSelect.on('change', updateOptionsDiplome);
     optionDiplomeSelect.on('change', updateFilieres);
     updateFilieresDiplome();
+
+    function updateBacAutreField() {
+        var otherField = $('.field-type_bac_autre');
+        if (typeBacSelect.val() == '-1') {
+            otherField.removeClass('hidden');
+        }
+        else {
+            otherField.addClass('hidden');
+        }
+    }
+    typeBacSelect.on('change', updateBacAutreField);
+    updateBacAutreField();
 };
