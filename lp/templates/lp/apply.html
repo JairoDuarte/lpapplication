@@ -24,7 +24,7 @@
             optionDiplomeSelect = $('#id_option_diplome'),
             filieresSelect = $('#id_filiere_choisie');
 
-        // On remplie la liste d
+        // On remplie la liste des types de diplomes
         typeDiplomeSelect.empty();
         for (var typeVal in arbreDiplome) {
             var typeDiplome = arbreDiplome[typeVal];
@@ -37,13 +37,15 @@
         var otherSelect = $('<option/>')
             .attr('value', '-1')
             .text('Autre...')
-            .prop('selected', diplomeChoisi == '-1')
+            .prop('selected', diplomeChoisi == '')
             .appendTo(typeDiplomeSelect);
 
-        function degreeTypeChanged() {
+        // On remplie la liste des filières
+        function updateFilieresDiplome() {
             var newVal = typeDiplomeSelect.val();
 
-            if (newVal == '-1') {
+            if (newVal == '') {
+                // Si l'on sélectionne le choix `Autres...`
                 $('#field_type_diplome_autre').removeClass('hidden');
                 filiereDiplomeSelect.empty().prop('disabled', true);
                 optionDiplomeSelect.empty().prop('disabled', true);
@@ -74,14 +76,16 @@
             }
 
             filiereDiplomeChoisie = undefined;
-            degreeSpecialtyChanged();
+            updateOptionsDiplome();
         }
 
-        function degreeSpecialtyChanged() {
+        // On remplie la liste des options
+        function updateOptionsDiplome() {
             var typeVal = typeDiplomeSelect.val();
             var newVal = filiereDiplomeSelect.val();
 
-            if (newVal == '-1') {
+            if (newVal == '') {
+                // Si l'on sélectionne le choix `Autres...`
                 $('#field_filiere_diplome_autre').removeClass('hidden');
                 optionDiplomeSelect.empty().prop('disabled', true);
             }
@@ -111,13 +115,10 @@
             }
 
             optionDiplomeChoisie = undefined;
-            degreeOptionChanged();
+            updateFilieres();
         }
 
-        function degreeOptionChanged() {
-            updateFilieres()
-        }
-
+        // On remplie la liste des filières disponibles
         function updateFilieres() {
             var typeDiplome = typeDiplomeSelect.val(),
                 filiereDiplome = filiereDiplomeSelect.val(),
@@ -150,12 +151,10 @@
             }
         }
 
-        typeDiplomeSelect.on('change', degreeTypeChanged);
-        filiereDiplomeSelect.on('change', degreeSpecialtyChanged);
-        optionDiplomeSelect.on('change', degreeOptionChanged);
-        degreeTypeChanged();
-        degreeSpecialtyChanged();
-        degreeOptionChanged();
+        typeDiplomeSelect.on('change', updateFilieresDiplome);
+        filiereDiplomeSelect.on('change', updateOptionsDiplome);
+        optionDiplomeSelect.on('change', updateFilieres);
+        updateFilieresDiplome();
     })(
         '{{ type_diplome }}', '{{ filiere_diplome }}', '{{ option_diplome }}',
         '{{ filiere_choisie }}', {{ arbre_diplome_json|safe }}, {{ filieres_json|safe }}
