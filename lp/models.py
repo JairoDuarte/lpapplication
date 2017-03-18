@@ -63,11 +63,6 @@ class BaremeAnneesDiplome(models.Model):
     annees_max = models.PositiveSmallIntegerField('années diplome max.', unique=True)
     note_preselection = models.DecimalField(max_digits=4, decimal_places=2)
 
-class Filiere(models.Model):
-    libelle = models.CharField(max_length=100, unique=True)
-    def __str__(self):
-        return self.libelle
-
 class TypeDiplome(models.Model):
     libelle = models.CharField(max_length=100, unique=True)
     def __str__(self):
@@ -77,13 +72,13 @@ class FiliereDiplome(models.Model):
     libelle = models.CharField(max_length=100, unique=True)
     type_diplome = models.ForeignKey(TypeDiplome, on_delete=models.CASCADE)
     def __str__(self):
-        return self.libelle
+        return str(self.type_diplome) + ' » ' + self.libelle
 
 class OptionDiplome(models.Model):
     libelle = models.CharField(max_length=100, unique=True)
-    filiere_dipolme = models.ForeignKey(FiliereDiplome, on_delete=models.CASCADE)
+    filiere_diplome = models.ForeignKey(FiliereDiplome, on_delete=models.CASCADE)
     def __str__(self):
-        return self.libelle
+        return str(self.filiere_diplome) + ' » ' + self.libelle
 
 class TypeBac(models.Model):
     libelle = models.CharField(max_length=100, unique=True)
@@ -93,6 +88,14 @@ class TypeBac(models.Model):
 class MentionBac(models.Model):
     libelle = models.CharField(max_length=100, unique=True)
     note_preselection = models.DecimalField(max_digits=4, decimal_places=2)
+    def __str__(self):
+        return self.libelle
+
+class Filiere(models.Model):
+    libelle = models.CharField(max_length=100, unique=True)
+    types_diplome = models.ManyToManyField(TypeDiplome, blank=True)
+    filieres_diplome = models.ManyToManyField(FiliereDiplome, blank=True)
+    options_diplome = models.ManyToManyField(OptionDiplome, blank=True)
     def __str__(self):
         return self.libelle
 
