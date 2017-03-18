@@ -91,55 +91,7 @@ class CandidatAdmin(admin.ModelAdmin):
     change_form_template = 'admin/change_form_candidat.html'
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
-        # TODO: Remove duplicate code
-        # Traiter le formulaire
-        if request.method == 'POST':
-            form_type_diplome = request.POST['type_diplome']
-            form_filiere_diplome = request.POST['filiere_diplome']
-            form_option_diplome = request.POST['option_diplome']
-            form_filiere_choisie = request.POST['form_filiere_choisie']
-        else:
-            form_type_diplome = ''
-            form_filiere_diplome = ''
-            form_option_diplome = ''
-            form_filiere_choisie = ''
-        # Préparer la liste des types, filières et options de diplômes
-        # TODO: names need quote escaping
-        types_diplome = []
-        for type_diplome in models.TypeDiplome.objects.all():
-            filieres_diplome = []
-            for filiere_diplome in type_diplome.filierediplome_set.all():
-                options_diplome = []
-                for option_diplome in filiere_diplome.optiondiplome_set.all():
-                    options_diplome.append('"%i":"%s"' % (option_diplome.pk, option_diplome.libelle))
-                filieres_diplome.append('"%i": {"label": "%s", "options": {%s}}' % (filiere_diplome.pk, filiere_diplome.libelle, ','.join(options_diplome)))
-            types_diplome.append('"%i": {"label": "%s", "filieres": {%s}}' % (type_diplome.pk, type_diplome.libelle, ','.join(filieres_diplome)))
-        arbre_diplome_json = '{%s}' % ','.join(types_diplome)
-        # Préparer la liste des filières et leurs diplômes corréspondants
-        filieres = []
-        for filiere in models.Filiere.objects.all():
-            types_diplome = [
-                ('"%i"' % type_diplome.pk)
-                for type_diplome in filiere.types_diplome.all()
-            ]
-            filieres_diplome = [
-                ('"%i"' % filiere_diplome.pk)
-                for filiere_diplome in filiere.filieres_diplome.all()
-            ]
-            options_diplome = [
-                ('"%i"' % option_diplome.pk)
-                for option_diplome in filiere.options_diplome.all()
-            ]
-            filieres.append('"%i": {"label": "%s", "diplomes": [%s], "filieres": [%s], "options": [%s]}' % (filiere.pk, filiere.libelle, ','.join(types_diplome), ','.join(filieres_diplome), ','.join(options_diplome)))
-        filieres_json = '{%s}' % ','.join(filieres)
-        context.update({
-            'arbre_diplome_json': arbre_diplome_json,
-            'filieres_json': filieres_json,
-            'type_diplome': form_type_diplome,
-            'filiere_diplome': form_filiere_diplome,
-            'option_diplome': form_option_diplome,
-            'filiere_choisie': form_filiere_choisie,
-        })
+        context.update(self.form.context_data(request))
         return super(CandidatAdmin, self).render_change_form(request, context, add, change, form_url, obj)
 
 class FiliereDiplomeAdmin(admin.ModelAdmin):
