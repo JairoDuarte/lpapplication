@@ -87,7 +87,7 @@ class CandidatAdmin(admin.ModelAdmin):
 
 class OptionDiplomeInline(admin.TabularInline):
     """
-    Panneau d'administration de filières de diplômes
+    Formulaire de modification d'options de diplômes imbriqué
     """
     model = models.OptionDiplome
     extra = 1
@@ -98,6 +98,20 @@ class FiliereDiplomeAdmin(admin.ModelAdmin):
     """
     list_display = ('libelle', 'type_diplome_libelle',)
     inlines = [OptionDiplomeInline]
+
+class FiliereDiplomeInline(admin.TabularInline):
+    """
+    Formulaire de modification de filières de diplômes imbriqué
+    """
+    model = models.FiliereDiplome
+    show_change_link = True
+    extra = 1
+
+class TypeDiplomeAdmin(admin.ModelAdmin):
+    """
+    Panneau d'administration de types de diplômes
+    """
+    inlines = [FiliereDiplomeInline]
 
 class MentionBacAdmin(admin.ModelAdmin):
     """
@@ -110,7 +124,7 @@ admin.site.register(models.BaremeAge, BaremeAgeAdmin)
 admin.site.register(models.BaremeAnneesDiplome, BaremeAnneesDiplomeAdmin)
 admin.site.register(models.Candidat, CandidatAdmin)
 admin.site.register(models.Filiere)
-admin.site.register(models.TypeDiplome)
+admin.site.register(models.TypeDiplome, TypeDiplomeAdmin)
 admin.site.register(models.FiliereDiplome, FiliereDiplomeAdmin)
 admin.site.register(models.TypeBac)
 admin.site.register(models.MentionBac, MentionBacAdmin)
