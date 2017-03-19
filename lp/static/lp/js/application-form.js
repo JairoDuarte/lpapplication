@@ -9,20 +9,20 @@ window._initApplicationForm = window._initApplictaionForm || function(
         typeBacSelect = $('#id_type_bac');
 
     // On remplie la liste des types de diplomes
-    typeDiplomeSelect.empty();
-    for (var typeVal in arbreDiplome) {
-        var typeDiplome = arbreDiplome[typeVal];
-        $('<option/>')
-            .attr('value', typeVal)
-            .text(typeDiplome.label)
-            .prop('selected', diplomeChoisi == typeVal)
-            .appendTo(typeDiplomeSelect);
-    }
-    var otherSelect = $('<option/>')
-        .attr('value', '-1')
-        .text('Autre...')
-        .prop('selected', diplomeChoisi == '-1')
-        .appendTo(typeDiplomeSelect);
+    // typeDiplomeSelect.empty();
+    // for (var typeVal in arbreDiplome) {
+    //     var typeDiplome = arbreDiplome[typeVal];
+    //     $('<option/>')
+    //         .attr('value', typeVal)
+    //         .text(typeDiplome.label)
+    //         .prop('selected', diplomeChoisi == typeVal)
+    //         .appendTo(typeDiplomeSelect);
+    // }
+    // var otherSelect = $('<option/>')
+    //     .attr('value', '-1')
+    //     .text('Autre...')
+    //     .prop('selected', diplomeChoisi == '-1')
+    //     .appendTo(typeDiplomeSelect);
 
     // On remplie la liste des filières
     function updateFilieresDiplome() {

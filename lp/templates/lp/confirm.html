@@ -1,0 +1,15 @@
+{% extends "lp/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="signup-container panel panel-default">
+        <h1 class="panel-heading">Formulaire de préinscription</h1>
+        <form method="post" class="form-horizontal preinscription-form panel-body">
+            {% csrf_token %}
+            {{ candidat.cin }}<br/>
+            {{ candidat.filiere_choisie.libelle }}
+            <p class="text-right"><button type="submit">Confirmer</button></p>
+        </form>
+    </div>
+</div>
+{% endblock content %}

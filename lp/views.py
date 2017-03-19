@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
+from django.forms.models import model_to_dict
 from .forms import SettingsForm, CandidatForm
 from .utils import lp_settings
 from . import models
@@ -17,18 +18,55 @@ def apply(request):
     if request.method == 'POST':
         form = CandidatForm(request.POST)
         if form.is_valid():
-            # Success, we save candidate
-            form.save()
-            # Then redirect to confirmation notice
-            # TODO: Make an actual confirmation notice
-            return HttpResponseRedirect(reverse('lp:index'))
+            # Succès, on enregistre le candidat dans la session
+            request.session['candidat'] = request.POST
+            # Et on redirige vers la page de confirmation
+            return HttpResponseRedirect(reverse('lp:confirm'))
     else:
-        form = CandidatForm()
+        # Si jamais on vient de la page de confirmation
+        # Il faudra récupérer les données envoyés
+        if 'candidat' in request.session:
+            form = CandidatForm(request.session['candidat'])
+            del request.session['candidat']
+        else:
+            form = CandidatForm()
     # Préparer le contexte
+    session_expired_error = None
+    if 'session_expired_error' in request.session:
+        session_expired_error = 'Votre session a expirée'
+        del request.session['session_expired_error']
     context = form.context_data()
-    context.update({'form': form})
+    context.update({
+        'form': form,
+        'session_expired_error': session_expired_error
+    })
     # Afficher
     return render(request, 'lp/apply.html', context)
+
+def confirm(request):
+    # On essaye de récupérer le candidat de la session
+    if 'candidat' not in request.session:
+        request.session['session_expired_error'] = True
+        return HttpResponseRedirect(reverse('lp:apply'))
+    candidat = request.session['candidat']
+    candidat_form = CandidatForm(candidat)
+    candidat_instance = candidat_form.save(commit=False)
+    if request.method == 'POST':
+        # On supprime le candidat de la session
+        del request.session['candidat']
+        # On recupère le candidat de la session et l'on enregistre dans la BDD
+        candidat_instance.save()
+        # On genere les données de confirmation email et on en envoit un
+        # TODO: confirmation d'email
+        # Puis on redirige vers la page de confirmation d'email
+        return HttpResponseRedirect(reverse('lp:confirm_email'))
+    # On affiche la page
+    return render(request, 'lp/confirm.html', {
+        'candidat': candidat_instance
+    })
+
+def confirm_email(request):
+    return render(request, 'lp/confirm_email.html', {})
 
 def admin_settings(request):
     user = request.user
