@@ -13,11 +13,9 @@ class UserCreationForm(forms.ModelForm):
     """
     password1 = forms.CharField(label='Mot de passe', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirmation de mot de passe', widget=forms.PasswordInput)
-
     class Meta:
         model = models.User
         fields = ('email',)
-
     def clean_password2(self):
         # Vérifier si les deux mots de passes sont identiques
         password1 = self.cleaned_data.get('password1')
@@ -25,7 +23,6 @@ class UserCreationForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError('Mots de passes non-identiques')
         return password2
-
     def save(self, commit=True):
         # Enregistrer le mot de passe dans un format hashé
         user = super(UserCreationForm, self).save(commit=False)
@@ -41,11 +38,9 @@ class UserChangeForm(forms.ModelForm):
     On y utilise un champ permettant de ne pas modifier le mot de passe.
     """
     password = ReadOnlyPasswordHashField()
-
     class Meta:
         model = models.User
         fields = ('email', 'password')
-
     def clean_password(self):
         return self.initial['password']
 
@@ -55,15 +50,12 @@ class UserAdmin(BaseUserAdmin):
     """
     form = UserChangeForm
     add_form = UserCreationForm
-
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
     )
-
     add_fieldsets = (
         (None, {'fields': ('email', 'password1', 'password2')}),
     )
-
     list_display = ('email',)
     list_filter = ('is_admin',)
     search_fields = ('email',)
@@ -89,22 +81,23 @@ class CandidatAdmin(admin.ModelAdmin):
     form = CandidatForm
     list_display = ('cin', 'cne', 'nom', 'prenom', 'note_preselection',)
     change_form_template = 'admin/change_form_candidat.html'
-
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         context.update(context['adminform'].form.context_data())
         return super(CandidatAdmin, self).render_change_form(request, context, add, change, form_url, obj)
+
+class OptionDiplomeInline(admin.TabularInline):
+    """
+    Panneau d'administration de filières de diplômes
+    """
+    model = models.OptionDiplome
+    extra = 1
 
 class FiliereDiplomeAdmin(admin.ModelAdmin):
     """
     Panneau d'administration de filières de diplômes
     """
     list_display = ('libelle', 'type_diplome_libelle',)
-
-class OptionDiplomeAdmin(admin.ModelAdmin):
-    """
-    Panneau d'administration de filières de diplômes
-    """
-    list_display = ('libelle', 'filiere_diplome_libelle', 'type_diplome_libelle',)
+    inlines = [OptionDiplomeInline]
 
 class MentionBacAdmin(admin.ModelAdmin):
     """
@@ -119,7 +112,6 @@ admin.site.register(models.Candidat, CandidatAdmin)
 admin.site.register(models.Filiere)
 admin.site.register(models.TypeDiplome)
 admin.site.register(models.FiliereDiplome, FiliereDiplomeAdmin)
-admin.site.register(models.OptionDiplome, OptionDiplomeAdmin)
 admin.site.register(models.TypeBac)
 admin.site.register(models.MentionBac, MentionBacAdmin)
 
