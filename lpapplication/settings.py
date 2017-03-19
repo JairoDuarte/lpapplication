@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from configparser import RawConfigParser
+
+config = RawConfigParser()
+config.read('config.ini')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,10 +24,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'f8b%!24_c_9r8elj_*oalzvcqfch%96oss@1_mk355n9bmrvya'
+SECRET_KEY = config.get('secrets', 'SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config.get('debug', 'DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -78,8 +82,12 @@ WSGI_APPLICATION = 'lpapplication.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        'NAME': config.get('database', 'DB_NAME'),
+        'USER': config.get('database', 'DB_USER'),
+        'PASSWORD': config.get('database', 'DB_PASSWORD'),
+        'HOST': config.get('database', 'DB_HOST'),
+        'DEFAULT_CHARSET': config.get('database', 'DB_DEFAULT_CHARSET'),
         'OPTIONS': {
-            'read_default_file': os.path.join(BASE_DIR, 'mysql.cnf'),
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES';SET default_storage_engine=INNODB;",
         },
     }
@@ -125,10 +133,10 @@ STATIC_URL = '/static/'
 
 # Email settings
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'smtptestdummy@gmail.com'
-EMAIL_HOST_PASSWORD = 'passroot'
-EMAIL_PORT = 587
+EMAIL_USE_TLS = config.get('email', 'EMAIL_USE_TLS')
+EMAIL_HOST = config.get('email', 'EMAIL_HOST')
+EMAIL_HOST_USER = config.get('email', 'EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config.get('email', 'EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config.get('email', 'EMAIL_PORT')
 
 AUTH_USER_MODEL = 'lp.user'
