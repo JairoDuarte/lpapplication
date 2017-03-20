@@ -9,12 +9,10 @@ class MyUserManager(BaseUserManager):
         """
         if not email:
             raise ValueError('Un utilisateur doit avoir une addresse email')
-
         user = self.model(email=self.normalize_email(email))
         user.set_password(password)
         user.save(using=self._db)
         return user
-
     def create_superuser(self, email, password=None):
         """
         Créé et enregistre un administrateur avec un email et un mot de passe

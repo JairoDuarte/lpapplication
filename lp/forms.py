@@ -163,3 +163,8 @@ class CandidatForm(forms.ModelForm):
         ('Informations sur le Bac', ('type_bac', 'type_bac_autre', 'annee_bac', 'mention_bac',)),
         ('Informations sur la filière', ('filiere_choisie',)),
     )
+
+class CandidatChangeForm(CandidatForm):
+    def __init__(self, *args, **kwargs):
+        super(CandidatForm, self).__init__(*args, **kwargs)
+        self.fields['email'].disabled = True

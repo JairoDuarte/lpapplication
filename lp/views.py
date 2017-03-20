@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_views
 from django.core.mail import send_mail
 from django.template import loader
 
-from .forms import SettingsForm, CandidatForm, EmailForm, PasswordForm
+from .forms import SettingsForm, CandidatForm, CandidatChangeForm, EmailForm, PasswordForm
 from .utils import lp_settings, filter_login
 from . import models
 
@@ -168,16 +168,30 @@ def set_password(request):
     return render(request, 'lp/set_password.html', {'form': form})
 
 def panel(request):
+    user = request.user
     # On redirige l'utilsateur si pas un candidat
-    if request.user.is_staff:
+    if user.is_staff:
         return HttpResponseRedirect(reverse('admin:index'))
-    elif request.user.is_anonymous:
+    elif user.is_anonymous:
         from django.contrib.auth.views import redirect_to_login
         return redirect_to_login(
             request.get_full_path(),
             reverse('lp:login', current_app='lp')
         )
-    return render(request, 'lp/panel.html', {})
+    # On récupère l'objet candidat
+    candidat = user.candidat
+    # On crée le formulaire
+    if request.method == 'POST':
+        form = CandidatChangeForm(request.POST, instance=candidat)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Données enregistrées avec succès')
+    else:
+        form = CandidatChangeForm(instance=candidat)
+    context = form.context_data()
+    context.update(form=form)
+    # On affiche
+    return render(request, 'lp/panel.html', context)
 
 def logout(request):
     auth_views.logout(request)

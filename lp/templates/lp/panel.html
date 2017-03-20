@@ -1,7 +1,22 @@
 {% extends 'lp/panel_base.html' %}
+{% load static %}
 
 {% block page_title %}{{ block.super }} :: Changement du mot de passe{% endblock page_title %}
 
 {% block panelcontent %}
-    Panel content
+<form method="post">
+    {% csrf_token %}
+    {{ form|safe }}
+    <button type="submit">Envoyer</button>
+</form>
 {% endblock panelcontent %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'lp/js/application-form.js' %}"></script>
+<script type="text/javascript">
+    window._initApplicationForm(
+        '{{ type_diplome }}', '{{ filiere_diplome }}', '{{ option_diplome }}',
+        '{{ filiere_choisie }}', {{ arbre_diplome_json|safe }}, {{ filieres_json|safe }}
+    );
+</script>
+{% endblock extra_js %}
