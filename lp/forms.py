@@ -166,5 +166,5 @@ class CandidatForm(forms.ModelForm):
 
 class CandidatChangeForm(CandidatForm):
     def __init__(self, *args, **kwargs):
-        super(CandidatForm, self).__init__(*args, **kwargs)
+        super(CandidatChangeForm, self).__init__(*args, **kwargs)
         self.fields['email'].disabled = True
