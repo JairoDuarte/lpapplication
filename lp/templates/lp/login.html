@@ -1,5 +1,12 @@
-{% extends "lp/base.html" %}
+{% extends 'lp/base.html' %}
+
+{% block page_title %}{{ block.super }} :: Connexion{% endblock page_title %}
 
 {% block content %}
-Login
+    <h1>Connexion</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Connexion</button>
+    </form>
 {% endblock content %}

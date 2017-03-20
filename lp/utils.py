@@ -1,4 +1,13 @@
 from .models import Settings
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
+def filter_login(request):
+    user = request.user
+    if user.is_staff:
+        return HttpResponseRedirect(reverse('admin:index'))
+    elif not user.is_anonymous:
+        return HttpResponseRedirect(reverse('lp:panel'))
 
 def lp_settings():
     settingsSet = Settings.objects.filter(id=1)

@@ -2,18 +2,22 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
-from django.forms.models import model_to_dict
 from .forms import SettingsForm, CandidatForm
-from .utils import lp_settings
-from . import models
+from .utils import lp_settings, filter_login
+from django.contrib.auth import views as auth_views
 
 def index(request):
+    # On redirige l'utilsateur si déjà connecté
+    response = filter_login(request)
+    if response:
+        return response
     return render(request, 'lp/index.html', {})
 
-def login(request):
-    return render(request, 'lp/login.html', {})
-
 def apply(request):
+    # On redirige l'utilsateur si déjà connecté
+    response = filter_login(request)
+    if response:
+        return response
     # Traiter le formulaire
     if request.method == 'POST':
         form = CandidatForm(request.POST)
@@ -44,6 +48,10 @@ def apply(request):
     return render(request, 'lp/apply.html', context)
 
 def confirm(request):
+    # On redirige l'utilsateur si déjà connecté
+    response = filter_login(request)
+    if response:
+        return response
     # On essaye de récupérer le candidat de la session
     if 'candidat' not in request.session:
         request.session['session_expired_error'] = True
@@ -66,7 +74,24 @@ def confirm(request):
     })
 
 def confirm_email(request):
+    # On redirige l'utilsateur si déjà connecté
+    response = filter_login(request)
+    if response:
+        return response
     return render(request, 'lp/confirm_email.html', {})
+
+def panel(request):
+    # On redirige l'utilsateur si pas un candidat
+    if request.user.is_staff:
+        return HttpResponseRedirect(reverse('admin:index'))
+    elif request.user.is_anonymous:
+        return HttpResponseRedirect(reverse('lp:index'))
+    return render(request, 'lp/panel.html', {})
+
+def logout(request):
+    auth_views.logout(request)
+    messages.info(request, 'Déconnecté avec succès')
+    return HttpResponseRedirect(reverse('lp:index'))
 
 def admin_settings(request):
     user = request.user

@@ -140,3 +140,5 @@ EMAIL_HOST_PASSWORD = config.get('email', 'EMAIL_HOST_PASSWORD')
 EMAIL_PORT = config.get('email', 'EMAIL_PORT')
 
 AUTH_USER_MODEL = 'lp.user'
+
+LOGIN_REDIRECT_URL = '/'

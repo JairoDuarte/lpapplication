@@ -1,0 +1,8 @@
+{% extends 'lp/base.html' %}
+
+{% block page_title %}{{ block.super }} :: Candidat{% endblock page_title %}
+
+{% block content %}
+Panel<br/>
+<a href="{% url 'lp:logout'%}">Logout</a>
+{% endblock content %}

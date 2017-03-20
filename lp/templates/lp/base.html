@@ -15,6 +15,19 @@
     {% block extra_css %}{% endblock extra_css %}
 </head>
 <body>
+{% block flashmessages %}
+    {% if messages %}
+    <ul class="messages">
+        {% for msg in messages %}       
+        <li>
+            <div class="alert alert-{{msg.level_tag}}" role="alert">
+        {{msg.message}}
+        </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock flashmessages %}
 {% block content %} {% endblock content %}
 
 {% block javascript %}
