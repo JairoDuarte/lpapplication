@@ -22,6 +22,26 @@ class SettingsForm(forms.ModelForm):
             raise forms.ValidationError('Âge maximal du Bac doit être supérieur ou égale à 2')
         return age
 
+class EmailForm(forms.Form):
+    email = forms.EmailField()
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        candidat = models.Candidat.objects.filter(email=email)
+        if len(candidat) == 0:
+            raise forms.ValidationError("Aucun candidat n'existe avec l'adresse email fournie")
+        return email
+
+class PasswordForm(forms.Form):
+    password = forms.CharField(min_length=6, widget=forms.PasswordInput)
+    password_confirm = forms.CharField(min_length=6, widget=forms.PasswordInput)
+    def clean_password_confirm(self):
+        # Vérifier si les deux mots de passes sont identiques
+        password1 = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password_confirm')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError('Mots de passe non-identiques')
+        return password2
+
 class CandidatForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # Init parent

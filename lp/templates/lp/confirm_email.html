@@ -1,5 +1,13 @@
 {% extends "lp/base.html" %}
 
 {% block content %}
-Email notice
+{% if invalid_link %}
+    <p>Le lien de validation d'email est invalide</p>
+{% endif %}
+<h1>Réenvoyer l'email de confirmation</h1>
+<form method="post" action="{% url 'lp:confirm_email' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Envoyer</button>
+</form>
 {% endblock content %}

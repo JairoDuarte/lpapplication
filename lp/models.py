@@ -169,7 +169,7 @@ class Candidat(models.Model):
     annee_bac = models.PositiveSmallIntegerField("année d'obtention du bac")
     mention_bac = models.ForeignKey(MentionBac, on_delete=models.SET_NULL, null=True)
     filiere_choisie = models.ForeignKey(Filiere, on_delete=models.SET_NULL, null=True)
-    jeton_validation = models.CharField(max_length=16, null=True)
+    jeton_validation = models.CharField(max_length=32, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
     def age(self):

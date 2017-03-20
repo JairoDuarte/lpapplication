@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'change-password/', auth_views.password_change, {'template_name': 'lp/password_change.html'}, name='password_change'),
     url(r'change-password/done/', auth_views.password_change_done, name='password_change_done'),
     url(r'reset-password/', auth_views.password_reset, {'template_name': 'lp/password_reset.html', 'email_template_name': 'lp/password_reset_email.html'}, name='password_reset'),
+    url(r'set-password/', views.set_password, name='set_password'),
     url(r'logout/', views.logout, name='logout'),
     url(r'apply/', views.apply, name='apply'),
     url(r'confirm/', views.confirm, name='confirm'),
