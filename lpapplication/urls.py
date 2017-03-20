@@ -20,5 +20,6 @@ from lp import views
 urlpatterns = [
     url(r'^admin/settings/', views.admin_settings, name='admin_settings'),
     url(r'^admin/', admin.site.urls),
+    url(r'change-password/done/', views.password_change_done, name='password_change_done'),
     url(r'', include('lp.urls')),
 ]

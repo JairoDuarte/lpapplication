@@ -93,6 +93,11 @@ def logout(request):
     messages.info(request, 'Déconnecté avec succès')
     return HttpResponseRedirect(reverse('lp:index'))
 
+def password_change_done(request):
+    auth_views.password_change_done(request)
+    messages.info(request, 'Mot de passe modifié avec succès')
+    return HttpResponseRedirect(reverse('lp:panel'))
+
 def admin_settings(request):
     user = request.user
     # Check if staff user is logged

@@ -1,0 +1,12 @@
+{% extends 'lp/base.html' %}
+
+{% block page_title %}{{ block.super }} :: Candidat{% endblock page_title %}
+
+{% block content %}
+Panel<br/>
+<a href="{% url 'lp:password_change'%}">Changer le Mot de passe</a><br/>
+<a href="{% url 'lp:logout'%}">Logout</a><br/>
+{% block panelcontent %}
+    Content
+{% endblock panelcontent %}
+{% endblock content %}
