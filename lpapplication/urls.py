@@ -21,5 +21,8 @@ urlpatterns = [
     url(r'^admin/settings/', views.admin_settings, name='admin_settings'),
     url(r'^admin/', admin.site.urls),
     url(r'change-password/done/', views.password_change_done, name='password_change_done'),
+    url(r'reset-password/done/', views.password_reset_done, name='password_reset_done'),
+    url(r'reset-password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.password_reset_confirm, name='password_reset_confirm'),
+    url(r'reset-password/complete/', views.password_reset_complete, name='password_reset_complete'),
     url(r'', include('lp.urls')),
 ]

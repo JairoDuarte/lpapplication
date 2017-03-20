@@ -5,6 +5,7 @@ from django.contrib import messages
 from .forms import SettingsForm, CandidatForm
 from .utils import lp_settings, filter_login
 from django.contrib.auth import views as auth_views
+from django.core.mail import send_mail
 
 def index(request):
     # On redirige l'utilsateur si déjà connecté
@@ -85,7 +86,11 @@ def panel(request):
     if request.user.is_staff:
         return HttpResponseRedirect(reverse('admin:index'))
     elif request.user.is_anonymous:
-        return HttpResponseRedirect(reverse('lp:index'))
+        from django.contrib.auth.views import redirect_to_login
+        return redirect_to_login(
+            request.get_full_path(),
+            reverse('lp:login', current_app='lp')
+        )
     return render(request, 'lp/panel.html', {})
 
 def logout(request):
@@ -97,6 +102,18 @@ def password_change_done(request):
     auth_views.password_change_done(request)
     messages.info(request, 'Mot de passe modifié avec succès')
     return HttpResponseRedirect(reverse('lp:panel'))
+
+def password_reset_confirm(request, uidb64, token):
+    return auth_views.password_reset_confirm(request, token=token, uidb64=uidb64, template_name='lp/password_reset_confirm.html')
+
+def password_reset_done(request):
+    auth_views.password_reset_done(request)
+    return render(request, 'lp/password_reset_done.html', {})
+
+def password_reset_complete(request):
+    auth_views.password_reset_complete(request)
+    messages.info(request, 'Mot de passe modifié avec succès')
+    return HttpResponseRedirect(reverse('lp:login'))
 
 def admin_settings(request):
     user = request.user

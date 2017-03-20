@@ -30,6 +30,7 @@ class MyUserManager(BaseUserManager):
 class User(AbstractBaseUser):
     email = models.CharField(max_length=100, unique=True)
     is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     objects = MyUserManager()
     USERNAME_FIELD = 'email'
     class Meta:
@@ -46,9 +47,6 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         # Won't be asking for permission for anything not admin related
         return self.is_admin
-    @property
-    def is_active(self):
-        return True
     @property
     def is_staff(self):
         return self.is_admin
