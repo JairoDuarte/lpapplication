@@ -115,6 +115,7 @@ window._initApplicationForm = window._initApplictaionForm || function(
         for (var id in filieres) {
             var filiere = filieres[id];
             if (
+                typeDiplome == '-1' ||
                 filiere.diplomes.indexOf(typeDiplome) >= 0 ||
                 filiere.filieres.indexOf(filiereDiplome) >= 0 ||
                 filiere.options.indexOf(filiereDiplome) >= 0
