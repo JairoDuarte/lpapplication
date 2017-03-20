@@ -133,11 +133,11 @@ STATIC_URL = '/static/'
 
 # Email settings
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'smtptestdummy@gmail.com'
-EMAIL_HOST_PASSWORD = 'passpass'
-EMAIL_PORT = 587
+EMAIL_USE_TLS = config.get('email', 'EMAIL_USE_TLS')
+EMAIL_HOST = config.get('email', 'EMAIL_HOST')
+EMAIL_HOST_USER = config.get('email', 'EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config.get('email', 'EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config.get('email', 'EMAIL_PORT')
 
 AUTH_USER_MODEL = 'lp.user'
 
