@@ -126,6 +126,7 @@ class MentionBac(models.Model):
 
 class Filiere(models.Model):
     libelle = models.CharField('libellé', max_length=100, unique=True)
+    libelle_court = models.CharField('libellé court', max_length=100, blank=True, default='')
     types_diplome = models.ManyToManyField(TypeDiplome, blank=True)
     filieres_diplome = models.ManyToManyField(FiliereDiplome, blank=True)
     options_diplome = models.ManyToManyField(OptionDiplome, blank=True)
@@ -172,11 +173,24 @@ class Candidat(models.Model):
     type_bac = models.ForeignKey(TypeBac, on_delete=models.SET_NULL, null=True)
     type_bac_autre = models.CharField('autre', max_length=100, blank=100)
     annee_bac = models.PositiveSmallIntegerField("année d'obtention du bac")
-    mention_bac = models.ForeignKey(MentionBac, on_delete=models.SET_NULL, null=True)
-    filiere_choisie = models.ForeignKey(Filiere, on_delete=models.SET_NULL, null=True)
+    mention_bac = models.ForeignKey(MentionBac, on_delete=models.SET_NULL, null=True, verbose_name='mention du Bac')
+    filiere_choisie = models.ForeignKey(Filiere, on_delete=models.SET_NULL, null=True, verbose_name='filière choisie')
     jeton_validation = models.CharField(max_length=32, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
+    def short_cin(self):
+        return self.cin
+    short_cin.admin_order_field = 'cin'
+    short_cin.short_description = 'CIN'
+    def short_cne(self):
+        return self.cne
+    short_cne.admin_order_field = 'cne'
+    short_cne.short_description = 'CNE'
+    def short_filiere(self):
+        filiere = self.filiere_choisie
+        return filiere.libelle_court if len(filiere.libelle_court) != 0 else filiere.libelle
+    short_filiere.admin_order_field = 'filiere_choisie'
+    short_filiere.short_description = 'Filière choisie'
     def age(self):
         now = timezone.now()
         born = self.date_naissance
