@@ -175,4 +175,37 @@ window._initApplicationForm = window._initApplictaionForm || function(
     $('#id_note_s3, #id_note_s4').on(
         'change', calculMoyenne('#id_note_s3', '#id_note_s4', '#id_note_a2')
     );
+
+    // Nombre de jours du selecteur de date
+    var longerMonths = [1, 3, 5, 7, 8, 10, 12];
+    function majNombreJours() {
+        var month = parseInt($('#id_date_naissance_1').val()),
+            year = parseInt($('#id_date_naissance_2').val());
+        if (isNaN(month) || isNaN(year)) return;
+
+        // Calcule de jours dans le mois
+        var dayCount = 28;
+        if (month == 2) {
+            if (year % 4 == 0) dayCount++;
+        }
+        else {
+            dayCount += (longerMonths.indexOf(month) >= 0) ? 3 : 2;
+        }
+
+        // Mise à jour du Select
+        var elem = $('#id_date_naissance_0');
+        var currentlySelected = parseInt(elem.val());
+        if (currentlySelected > dayCount) currentlySelected = dayCount;
+        elem.empty();
+        for (var i = 1; i <= dayCount; ++i) {
+            $('<option/>')
+                .text(i)
+                .attr('value', i)
+                .prop('selected', currentlySelected == i)
+                .appendTo(elem);
+        }
+    }
+    $('#id_date_naissance_1, #id_date_naissance_2')
+        .on('change', majNombreJours);
+    majNombreJours();
 };
