@@ -277,13 +277,14 @@ class CandidatForm(forms.ModelForm):
             if id_type_diplome != '-1':
                 q = Q(types_diplome__pk=id_type_diplome)
                 if id_filiere_diplome != '':
-                    q = q | Q(filieres_diplomes__pk=id_filiere_diplome)
+                    q = q | Q(filieres_diplome__pk=id_filiere_diplome)
                     if id_option_diplome != '':
                         q = q | Q(options_diplome__pk=id_option_diplome)
-                models.Filiere.objects.get(Q(pk=id_filiere_choisie) & q)
+                print('TYPE' + str(Q(pk=id_filiere_choisie) & q))
+                models.Filiere.objects.filter(pk=id_filiere_choisie).get(q)
             else:
                 models.Filiere.objects.get(pk=id_filiere_choisie)
-        except:
+        except models.Filiere.DoesNotExist:
             self.add_error('filiere_choisie', 'Valeur invalide')
         # On retourne les données de nouveau
         return cleaned_data
