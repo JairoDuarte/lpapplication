@@ -141,6 +141,7 @@ window._initApplicationForm = window._initApplictaionForm || function(
     optionDiplomeSelect.on('change', updateFilieres);
     updateFilieresDiplome();
 
+    // Champs autre du bac
     function updateBacAutreField() {
         var otherField = $('.field-type_bac_autre');
         if (typeBacSelect.val() == '-1') {
@@ -152,4 +153,26 @@ window._initApplicationForm = window._initApplictaionForm || function(
     }
     typeBacSelect.on('change', updateBacAutreField);
     updateBacAutreField();
+
+    // Calcule de moyenne de première annee
+    function calculMoyenne(src1, src2, dst) {
+        var inputNote1 = $(src1),
+            inputNote2 = $(src2),
+            inputNoteAnnee = $(dst);
+        return function() {
+            var note1 = parseFloat(inputNote1.val()),
+                note2 = parseFloat(inputNote2.val());
+            if (!isNaN(note1) && !isNaN(note2)) {
+                inputNoteAnnee.val(((note1 + note2) / 2.0).toFixed(2));
+            }
+        }
+    }
+
+    $('#id_note_s1, #id_note_s2').on(
+        'change', calculMoyenne('#id_note_s1', '#id_note_s2', '#id_note_a1')
+    );
+
+    $('#id_note_s3, #id_note_s4').on(
+        'change', calculMoyenne('#id_note_s3', '#id_note_s4', '#id_note_a2')
+    );
 };
