@@ -72,14 +72,14 @@ class BaremeAnneesDiplomeAdmin(admin.ModelAdmin):
     """
     Panneau d'administration de barèmes d'années du diplôme
     """
-    list_display = ('annees_max', 'note_preselection',)
+    list_display = ('nb_redoublements', 'note_preselection',)
 
 class CandidatAdmin(admin.ModelAdmin):
     """
     Panneau d'administration de candidats
     """
     form = CandidatForm
-    list_display = ('cin', 'cne', 'nom', 'prenom', 'note_preselection', 'age', 'note_age')
+    list_display = ('cin', 'cne', 'nom', 'prenom', 'note_preselection', 'age', 'note_age', 'note_validation')
     change_form_template = 'admin/change_form_candidat.html'
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         context.update(context['adminform'].form.context_data())

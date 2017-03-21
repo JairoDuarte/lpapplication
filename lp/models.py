@@ -64,10 +64,10 @@ class BaremeAge(models.Model):
         verbose_name_plural = "barème d'âge"
 
 class BaremeAnneesDiplome(models.Model):
-    annees_max = models.PositiveSmallIntegerField('années diplome max.', unique=True)
+    nb_redoublements = models.PositiveSmallIntegerField('nombre de redoublements', unique=True)
     note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
     def __str__(self):
-        return 'Années %i (Note: %g)' % (self.annees_max, self.note_preselection)
+        return 'Années %i (Note: %g)' % (self.nb_redoublements, self.note_preselection)
     class Meta:
         verbose_name = "barème d'années de diplôme"
         verbose_name_plural = "barème d'années de diplôme"
@@ -135,6 +135,11 @@ class Filiere(models.Model):
         verbose_name = 'filière'
 
 class Candidat(models.Model):
+    NB_REDOUBLEMENTS_CHOIX = (
+        (0, 'Sans redoublement'),
+        (1, 'Un redoublement'),
+        (2, 'Deux redoublements ou plus...'),
+    )
     cin = models.CharField("code d'Identification National (CIN)", max_length=50, unique=True)
     cne = models.CharField("code National d'Étudiant (CNE)", max_length=50, unique=True)
     nom = models.CharField(max_length=100)
@@ -163,6 +168,7 @@ class Candidat(models.Model):
     type_diplome_autre = models.CharField('autre', max_length=100, blank=True)
     filiere_diplome = models.ForeignKey(FiliereDiplome, on_delete=models.SET_NULL, null=True, blank=True)
     option_diplome = models.ForeignKey(OptionDiplome, on_delete=models.SET_NULL, null=True, blank=True)
+    nb_redoublements = models.PositiveSmallIntegerField('nombre de redoublements', choices=NB_REDOUBLEMENTS_CHOIX, default=0)
     type_bac = models.ForeignKey(TypeBac, on_delete=models.SET_NULL, null=True)
     type_bac_autre = models.CharField('autre', max_length=100, blank=100)
     annee_bac = models.PositiveSmallIntegerField("année d'obtention du bac")
@@ -178,14 +184,20 @@ class Candidat(models.Model):
     def note_age(self):
         age = self.age()
         bareme_age_set = m.BaremeAge.objects.order_by('-age_max').all()
-        note_age = bareme_age_set[0].note_preselection
+        note_age = bareme_age_set[len(bareme_age_set) - 1].note_preselection
         for bareme_age in bareme_age_set:
             if age >= bareme_age.age_max:
                 note_age = bareme_age.note_preselection
                 break
         return note_age
     def note_validation(self):
-        from decimal import Decimal
-        return Decimal('20')
+        nb_redoublements = self.nb_redoublements
+        bareme_set = m.BaremeAnneesDiplome.objects.order_by('-nb_redoublements').all()
+        note_validation = bareme_set[len(bareme_set) - 1].note_preselection
+        for bareme_annee in bareme_set:
+            if nb_redoublements >= bareme_annee.nb_redoublements:
+                note_validation = bareme_annee.note_preselection
+                break
+        return note_validation
     def __str__(self):
         return self.prenom + ' ' + self.nom
