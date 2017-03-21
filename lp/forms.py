@@ -321,8 +321,8 @@ class CandidatForm(forms.ModelForm):
             Decimal('0.25') * candidat.note_a1 + \
             Decimal('0.25') * candidat.note_a2 + \
             Decimal('0.15') * candidat.mention_bac.note_preselection + \
-            Decimal('0.15') * Decimal('20') + \
-            Decimal('0.20') * Decimal('20')
+            Decimal('0.15') * candidat.note_age() + \
+            Decimal('0.20') * candidat.note_validation()
         if commit:
             candidat.save()
         return candidat

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
+from . import models as m
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -50,11 +51,11 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 class Settings(models.Model):
-    age_max = models.PositiveSmallIntegerField('age max.', default=25)
-    age_bac_max = models.PositiveSmallIntegerField('age max. du bac', default=4)
+    age_max = models.PositiveSmallIntegerField('âge max.', default=25)
+    age_bac_max = models.PositiveSmallIntegerField('âge max. du bac', default=4)
 
 class BaremeAge(models.Model):
-    age_max = models.PositiveSmallIntegerField('age max.', unique=True)
+    age_max = models.PositiveSmallIntegerField('âge max.', unique=True)
     note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
     def __str__(self):
         return 'Âge %i (Note: %g)' % (self.age_max, self.note_preselection)
@@ -171,11 +172,20 @@ class Candidat(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
     def age(self):
-        """
-        Retourne l'age actuel du candidat
-        """
         now = timezone.now()
         born = self.date_naissance
         return now.year - born.year - ((now.month, now.day) < (born.month, born.day))
+    def note_age(self):
+        age = self.age()
+        bareme_age_set = m.BaremeAge.objects.order_by('-age_max').all()
+        note_age = bareme_age_set[0].note_preselection
+        for bareme_age in bareme_age_set:
+            if age >= bareme_age.age_max:
+                note_age = bareme_age.note_preselection
+                break
+        return note_age
+    def note_validation(self):
+        from decimal import Decimal
+        return Decimal('20')
     def __str__(self):
         return self.prenom + ' ' + self.nom
