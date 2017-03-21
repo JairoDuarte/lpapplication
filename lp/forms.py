@@ -138,10 +138,10 @@ class CandidatForm(forms.ModelForm):
         return {
             'arbre_diplome_json': arbre_diplome_json,
             'filieres_json': filieres_json,
-            'type_diplome': form_type_diplome,
-            'filiere_diplome': form_filiere_diplome,
-            'option_diplome': form_option_diplome,
-            'filiere_choisie': form_filiere_choisie,
+            'type_diplome': form_type_diplome or '',
+            'filiere_diplome': form_filiere_diplome or '',
+            'option_diplome': form_option_diplome or '',
+            'filiere_choisie': form_filiere_choisie or '',
         }
     def __verifier_pays(self, pays):
         liste_pays = [pays_id for pays_id, pays_nom in Countries.LIST]
