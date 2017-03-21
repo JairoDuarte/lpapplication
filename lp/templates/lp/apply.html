@@ -1,18 +1,19 @@
-{% extends "lp/base.html" %}
+{% extends "lp/site_base.html" %}
 {% load static %}
 
-{% block content %}
-<div class="container">
-    <div class="signup-container panel panel-default">
-        <div class="panel-heading">Formulaire de préinscription</div>
-        <form method="post" class="form-horizontal preinscription-form panel-body">
-            {% csrf_token %}
-            {{ form|safe }}
-            <p class="text-right"><button type="submit">Confirmer</button></p>
-        </form>
-    </div>
+{% block breadcrumb %}
+    {{ block.super }} » <a href="{% url 'lp:apply' }}">Inscription</a>
+{% endblock breadcrumb %}
+{% block sitecontent %}
+<div class="container application-container">
+    <h1>Préinscription à la Licence Professionelle</h1>
+    <form method="post" class="form-horizontal preinscription-form panel-body">
+        {% csrf_token %}
+        {{ form|safe }}
+        <p class="text-right"><button type="submit" class="btn btn-lg btn-primary">Confirmer</button></p>
+    </form>
 </div>
-{% endblock content %}
+{% endblock sitecontent %}
 
 {% block extra_js %}
 <script type="text/javascript" src="{% static 'lp/js/application-form.js' %}"></script>

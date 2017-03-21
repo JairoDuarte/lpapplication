@@ -1,0 +1,25 @@
+{% extends "lp/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="breadcrumb-bar">
+    <div class="container">
+    {% block breadcrumb %}
+        <a href="{% url 'lp:index' %}">Accueil</a>
+    {% endblock breadcrumb %}
+    </div>
+</div>
+{% block sitecontent %}
+    
+{% endblock sitecontent %}
+{% endblock content %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'lp/js/application-form.js' %}"></script>
+<script type="text/javascript">
+    window._initApplicationForm(
+        '{{ type_diplome }}', '{{ filiere_diplome }}', '{{ option_diplome }}',
+        '{{ filiere_choisie }}', {{ arbre_diplome_json|safe }}, {{ filieres_json|safe }}
+    );
+</script>
+{% endblock extra_js %}

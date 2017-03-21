@@ -11,25 +11,34 @@
 
     {# Main style #}
     <link rel="stylesheet" href="{% static 'lp/css/style.css' %}">
+    {# Bootstrap #}
+    <link rel="stylesheet" type="text/css" href="{% static 'lp/css/bootstrap.min.css' %}">
 
     {% block extra_css %}{% endblock extra_css %}
 </head>
 <body>
-{% block flashmessages %}
-    {% if messages %}
-    <ul class="messages">
-        {% for msg in messages %}       
-        <li>
-            <div class="alert alert-{{msg.level_tag}}" role="alert">
-        {{msg.message}}
+<div id="container">
+    <header class="clear-fix">
+        <div class="container">
+            <img src="{% static 'lp/img/logo-estc.png' %}" alt="École Supérieure de Technologie de Casablanca" class="pull-left"/>
+            <img src="{% static 'lp/img/logo-uh2c.png' %}" alt="Université Hassan II de Casablanca" class="pull-right"/>
         </div>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-{% endblock flashmessages %}
-{% block content %} {% endblock content %}
-
+    </header>
+    {% block flashmessages %}
+        {% if messages %}
+        <ul class="messages">
+            {% for msg in messages %}       
+            <li>
+                <div class="alert alert-{{msg.level_tag}}" role="alert">
+            {{msg.message}}
+            </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endblock flashmessages %}
+    {% block content %} {% endblock content %}
+</div>
 {% block javascript %}
 {# jQuery #}
 <script type="text/javascript" src="{% static 'lp/js/jquery-3.1.1.min.js' %}"></script>

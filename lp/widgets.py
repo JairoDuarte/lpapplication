@@ -1,5 +1,6 @@
 from datetime import date
 from django.forms import widgets
+from django.template import loader
 
 class DateSelectorWidget(widgets.MultiWidget):
     def __init__(self, min_year, max_year, attrs=None):
@@ -23,7 +24,8 @@ class DateSelectorWidget(widgets.MultiWidget):
             return [value.day, value.month, value.year]
         return [None, None, None]
     def format_output(self, rendered_widgets):
-        return ''.join(rendered_widgets)
+        print(rendered_widgets)
+        return loader.get_template('lp/widgets/datepicker.html').render({'rendered_widgets': rendered_widgets})
     def value_from_datadict(self, data, files, name):
         datelist = [
             widget.value_from_datadict(data, files, name + '_%s' % i)

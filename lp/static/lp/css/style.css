@@ -1,0 +1,82 @@
+header {
+    background-color: #FAFAFA;
+    border-bottom: 3px solid #EF6F18;
+    padding: 10px;
+}
+
+article.cover {
+    background: url('../img/cover.jpg') no-repeat no-repeat;
+    background-size: cover;
+    padding: 2em;
+    color: #DADADA;
+    font-size: 1.6em;
+}
+
+article.cover .description h1 {
+    color: #EF6F18;
+    text-transform: uppercase;
+}
+
+article.cover .description p {
+    margin-left: 1em;
+}
+
+article.cover .description a {
+    color: #DADADA;
+}
+
+article.cover .description a.fancy-link {
+    color: #FFF;
+    text-transform: uppercase;
+    font-size: 1.2em;
+    border-bottom: 1px dotted #FFF;
+    /*text-decoration: none;*/
+}
+
+.application-container h1 {
+    color: #EF6F18;
+    text-transform: uppercase;
+}
+
+.application-container h2 {
+    color: #014C85;
+}
+
+.date-input-group div.day {
+    padding-right: 0;
+}
+
+.date-input-group div.month {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.date-input-group div.year {
+    padding-left: 0;
+}
+
+.date-input-group div.day select {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.date-input-group div.year select {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+}
+
+.date-input-group div.month select {
+    border-radius: 0;
+    border-left: none;
+}
+
+.field-note_a1 .widget, .field-note_a2 .widget {
+    width: 16.66666667%;
+}
+
+.breadcrumb-bar {
+    background: #FFF3AF;
+    border-bottom: 1px dotted #EF6F18;
+    padding: 1em;
+}

@@ -94,12 +94,12 @@ class CandidatForm(forms.ModelForm):
                     self.fields['filiere_diplome'].initial = instance.filiere_diplome.pk
                     if instance.option_diplome:
                         self.fields['option_diplome'].initial = instance.option_diplome.pk
-            else:
+            elif instance.type_diplome_autre and instance.type_diplome_autre != '':
                 self.fields['type_diplome'].initial = '-1'
             if instance.type_bac:
                 self.fields['type_bac'].initial = instance.type_bac.pk
-            else:
-                self.fields['type_diplome'].initial = '-1'
+            elif instance.type_bac_autre and instance.type_bac_autre != '':
+                self.fields['type_bac'].initial = '-1'
             if instance.filiere_choisie:
                 self.fields['filiere_choisie'].initial = instance.filiere_choisie.pk
     def context_data(self):
@@ -294,17 +294,39 @@ class CandidatForm(forms.ModelForm):
     def __str__(self):
         html = ''
         for title, fields in CandidatForm.fieldsets:
-            html += '<h2>' + title + '</h2>'
-            for fieldname in fields:
-                field = self[fieldname]
-                html += '<div class="field-%s"><label for="%s">%s :</label><div class="widget">%s</div>' % (fieldname, field.id_for_label, field.label, field.as_widget())
-                errors = field.errors
-                if len(errors) > 0:
-                    html += '<ul class="errors">'
-                    for error in errors:
-                        html += '<li>%s</li>' % error
-                    html += '</ul>'
-                html += '</div>'
+            if title != '__single__' and title != '__double__':
+                html += '<h2>' + title + '</h2>'
+            if fields:
+                for i in range(len(fields)):
+                    fieldname = fields[i]
+                    field = self[fieldname]
+                    if title == '__double__':
+                        if i % 2 == 0:
+                            fieldname2 = fields[i + 1]
+                            field2 = self[fieldname2]
+                            html += '<div class="field-%s form-group"><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div>' % (fieldname, field.id_for_label, field.label, field.as_widget(attrs={'class': 'form-control'}), field2.id_for_label, field2.label, field2.as_widget(attrs={'class': 'form-control'}))
+                            errors = field.errors
+                            if len(errors) > 0:
+                                html += '<ul class="errors">'
+                                for error in errors:
+                                    html += '<li>%s</li>' % error
+                                html += '</ul>'
+                            errors = field2.errors
+                            if len(errors) > 0:
+                                html += '<ul class="errors">'
+                                for error in errors:
+                                    html += '<li>%s</li>' % error
+                                html += '</ul>'
+                            html += '</div>'
+                    else:
+                        html += '<div class="field-%s form-group"><label class="col-sm-4 control-label" for="%s">%s :</label><div class="widget col-sm-8">%s</div>' % (fieldname, field.id_for_label, field.label, field.as_widget(attrs={'class': 'form-control'}))
+                        errors = field.errors
+                        if len(errors) > 0:
+                            html += '<ul class="errors">'
+                            for error in errors:
+                                html += '<li>%s</li>' % error
+                            html += '</ul>'
+                        html += '</div>'
         return html
     def save(self, commit=True):
         candidat = super(CandidatForm, self).save(commit=False)
@@ -335,7 +357,11 @@ class CandidatForm(forms.ModelForm):
         exclude = ['user', 'jeton_validation', 'note_preselection', 'type_diplome', 'type_bac', 'filiere_diplome', 'option_diplome', 'filiere_choisie']
     fieldsets = (
         ('Informations personnelles', ('cin', 'cne', 'nom', 'prenom', 'nationalite', 'ville_naissance', 'pays_naissance', 'date_naissance', 'email', 'telephone_gsm', 'telephone_fixe', 'adresse_residence', 'ville_residence', 'pays_residence',)),
-        ('Informations sur le diplôme', ('note_s1', 'annee_s1', 'note_s2', 'annee_s2', 'note_a1', 'note_s3', 'annee_s3', 'note_s4', 'annee_s4', 'note_a2', 'type_diplome', 'type_diplome_autre', 'filiere_diplome', 'option_diplome', 'nb_redoublements', )),
+        ('Informations sur le diplôme', None,),
+        ('__double__', ('note_s1', 'annee_s1', 'note_s2', 'annee_s2',)),
+        ('__single__', ('note_a1',)),
+        ('__double__', ('note_s3', 'annee_s3', 'note_s4', 'annee_s4',)),
+        ('__single__', ('note_a2', 'nb_redoublements', 'type_diplome', 'type_diplome_autre', 'filiere_diplome', 'option_diplome', )),
         ('Informations sur le Bac', ('type_bac', 'type_bac_autre', 'annee_bac', 'mention_bac',)),
         ('Informations sur la filière', ('filiere_choisie',)),
     )
