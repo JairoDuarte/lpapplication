@@ -123,7 +123,7 @@ window._initApplicationForm = window._initApplictaionForm || function(
                 $('<option/>')
                     .attr('value', id)
                     .text(filiere.label)
-                    // .prop('selected', selectedFiliere == id)
+                    .prop('selected', filiereChoisie == id)
                     .appendTo(filieresSelect);
             }
         }
