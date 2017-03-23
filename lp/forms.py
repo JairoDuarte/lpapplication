@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.forms import widgets
 from django.db.models import Q
 from decimal import Decimal
+from django.utils.html import mark_safe
 
 from . import models
 from .utils import Countries, lp_settings
@@ -135,9 +136,9 @@ class CandidatForm(forms.ModelForm):
             villes_map[ville.pays].append(ville.nom)
         villes_json = '{%s}' % (', '.join([('"%s": [%s]' % (pays, ', '.join(['"%s"' % ville for ville in villes]))) for pays, villes in villes_map.items()]))
         return {
-            'arbre_diplome_json': arbre_diplome_json,
-            'filieres_json': filieres_json,
-            'villes_json': villes_json,
+            'arbre_diplome_json': mark_safe(arbre_diplome_json),
+            'filieres_json': mark_safe(filieres_json),
+            'villes_json': mark_safe(villes_json),
             'type_diplome': form_type_diplome or '',
             'filiere_diplome': form_filiere_diplome or '',
             'option_diplome': form_option_diplome or '',
@@ -342,7 +343,7 @@ class CandidatForm(forms.ModelForm):
                                 html += '<li>%s</li>' % error
                             html += '</ul>'
                         html += '</div>'
-        return html
+        return mark_safe(html)
     def save(self, commit=True):
         candidat = super(CandidatForm, self).save(commit=False)
         # Ajout de type de diplome

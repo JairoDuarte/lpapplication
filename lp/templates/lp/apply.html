@@ -10,7 +10,7 @@
     <h1>Préinscription à la Licence Professionelle</h1>
     <form method="post" class="form-horizontal application-form panel-body">
         {% csrf_token %}
-        {{ form|safe }}
+        {{ form }}
         <p class="text-right"><button type="submit" class="btn btn-lg btn-primary">Confirmer</button></p>
     </form>
 </div>
@@ -21,7 +21,7 @@
 <script type="text/javascript">
     window._initApplicationForm(
         '{{ type_diplome }}', '{{ filiere_diplome }}', '{{ option_diplome }}',
-        '{{ filiere_choisie }}', {{ arbre_diplome_json|safe }}, {{ filieres_json|safe }}, {{ villes_json|safe }}
+        '{{ filiere_choisie }}', {{ arbre_diplome_json }}, {{ filieres_json }}, {{ villes_json }}
     );
 </script>
 {% endblock extra_js %}
