@@ -261,6 +261,7 @@ class Countries:
         ("yémen", "Yémen"),
         ("serbie-et-monténégro", "Serbie-et-Monténégro"),
         ("zambie", "Zambie"),
+        ("autre", "Autre..."),
     ]
     LIST = {
         "afghanistan": "Afghanistan",
@@ -504,4 +505,5 @@ class Countries:
         "yémen": "Yémen",
         "serbie-et-monténégro": "Serbie-et-Monténégro",
         "zambie": "Zambie",
+        "autre": "Autre..."
     }
