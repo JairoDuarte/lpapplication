@@ -6,13 +6,14 @@ from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.core.mail import send_mail
 from django.template import loader
+from django.utils.http import urlquote
 
 from .forms import SettingsForm, CandidatForm, CandidatChangeForm, PasswordForm
 from .utils import lp_settings, filter_login
 from . import models
 
 def send_confirmation_email(email, token, request):
-    email_confirm_url = request.build_absolute_uri(reverse('lp:confirm_email') + '?token=' + token)
+    email_confirm_url = request.build_absolute_uri(reverse('lp:confirm_email') + '?email=' + urlquote(email) + '&token=' + token)
     corps_email = loader.get_template('lp/email_confirm_body.html').render({
         'confirm_url': email_confirm_url
     }, request)
@@ -75,39 +76,37 @@ def confirm(request):
         token_length = 32
         # Continuer à générer un nouveau jeton jusqu'à ce qu'on en trouve un unique
         confirmation_token = ''.join(random.choice(allowed_chars) for _ in range(token_length))
-        while len(models.Candidat.objects.filter(jeton_validation=confirmation_token)):
-            confirmation_token = ''.join(random.choice(allowed_chars) for _ in range(token_length))
         candidat_instance.jeton_validation = confirmation_token
         # On enregistre le candidat dans la bdd
         candidat_instance.save()
         # On envoie l'email
         send_confirmation_email(candidat_instance.email, confirmation_token, request)
-        # On affiche un message comme quoi on doit vérifier son email
-        messages.info(request, "Veuillez vérifier votre boîte email pour confirmer votre adresse email.")
         # Puis on redirige vers la page de confirmation d'email
-        return HttpResponseRedirect(reverse('lp:login'))
+        return HttpResponseRedirect(reverse('lp:confirm_email'))
     # On affiche la page
     return render(request, 'lp/confirm.html', {
         'candidat': candidat_instance
     })
+
 def confirm_email(request):
     # On redirige l'utilsateur si déjà connecté
     response = filter_login(request)
     if response:
         return response
     # On vérifie le jeton de validation donné comme paramètre
-    if 'token' in request.GET:
-        token = request.GET['token']
-        candidat_set = models.Candidat.objects.filter(jeton_validation=token)
-        if len(candidat_set) > 0:
-            # On envoit vers la page de création d'utilisateur
-            candidat = candidat_set[0]
-            request.session['email_confirme_candidat'] = candidat.pk
-            messages.info(request, 'Email confirmé avec succès')
-            return HttpResponseRedirect(reverse('lp:set_password'))
-        else:
-            messages.error(request, 'Lien de validation invalide.')
-            return HttpResponseRedirect(reverse('lp:index'))
+    if 'token' in request.GET or 'email' in request.GET:
+        if 'token' in request.GET and 'email' in request.GET:
+            email = request.GET['email']
+            token = request.GET['token']
+            candidat_set = models.Candidat.objects.filter(email=email, jeton_validation=token)
+            if len(candidat_set) > 0:
+                # On envoit vers la page de création d'utilisateur
+                candidat = candidat_set[0]
+                request.session['email_confirme_candidat'] = candidat.pk
+                messages.info(request, 'E-mail confirmé avec succès')
+                return HttpResponseRedirect(reverse('lp:set_password'))
+        messages.error(request, 'Lien de validation invalide.')
+        return HttpResponseRedirect(reverse('lp:index'))
     # Affichage
     return render(request, 'lp/confirm_email.html', {})
 
