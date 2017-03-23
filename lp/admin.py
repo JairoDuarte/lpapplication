@@ -3,9 +3,11 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.forms import widgets
 
 from . import models
 from .forms import CandidatForm
+from .utils import Countries
 
 class UserCreationForm(forms.ModelForm):
     """
@@ -43,6 +45,15 @@ class UserChangeForm(forms.ModelForm):
         fields = ('email', 'password')
     def clean_password(self):
         return self.initial['password']
+
+class VilleAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(VilleAdminForm, self).__init__(*args, **kwargs)
+        self.fields['pays'].widget = widgets.Select(choices=Countries.CHOICES)
+        self.fields['pays'].initial = self.fields['pays'].initial or 'maroc'
+    class Meta:
+        model = models.Ville
+        fields = '__all__'
 
 class UserAdmin(BaseUserAdmin):
     """
@@ -121,6 +132,9 @@ class MentionBacAdmin(admin.ModelAdmin):
     """
     list_display = ('libelle', 'note_preselection',)
 
+class VilleAdmin(admin.ModelAdmin):
+    form = VilleAdminForm
+
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.BaremeAge, BaremeAgeAdmin)
 admin.site.register(models.BaremeAnneesDiplome, BaremeAnneesDiplomeAdmin)
@@ -130,5 +144,6 @@ admin.site.register(models.TypeDiplome, TypeDiplomeAdmin)
 admin.site.register(models.FiliereDiplome, FiliereDiplomeAdmin)
 admin.site.register(models.TypeBac)
 admin.site.register(models.MentionBac, MentionBacAdmin)
+admin.site.register(models.Ville, VilleAdmin)
 
 admin.site.unregister(Group)

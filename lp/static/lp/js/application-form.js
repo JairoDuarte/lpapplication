@@ -1,6 +1,6 @@
 window._initApplicationForm = window._initApplictaionForm || function(
     diplomeChoisi, filiereDiplomeChoisie, optionDiplomeChoisie,
-    filiereChoisie, arbreDiplome, filieres
+    filiereChoisie, arbreDiplome, filieres, villes
 ) {
     var typeDiplomeSelect = $('#id_type_diplome'),
         filiereDiplomeSelect = $('#id_filiere_diplome'),
@@ -205,7 +205,101 @@ window._initApplicationForm = window._initApplictaionForm || function(
                 .appendTo(elem);
         }
     }
+
     $('#id_date_naissance_1, #id_date_naissance_2')
         .on('change', majNombreJours);
     majNombreJours();
+
+    // Mise à jour des formulaires de selection de villes
+    var paysNaissanceSelect = $('#id_pays_naissance'),
+        paysResidenceSelect = $('#id_pays_residence');
+
+    var villeNaissanceInputModel = $('#id_ville_naissance').clone(),
+        villeResidenceInputModel = $('#id_ville_residence').clone();
+
+    function majChampsVille(src, dst) {
+        console.log('check');
+        dstElem = $(dst);
+        var pays = src.val();
+        var listeVilles = villes[pays];
+
+        if (listeVilles && dstElem.prop('tagName') != 'SELECT') {
+            var val = dstElem.val();
+            var parent = dstElem.parent();
+            dstElem.remove();
+
+            var elem = $('<select/>')
+                .attr('name', dstElem.attr('name'))
+                .attr('id', dstElem.attr('id'))
+                .addClass('form-control')
+                .addClass('city-selector')
+                .addClass('city-input')
+                .prependTo(parent);
+
+            for (var n in listeVilles) {
+                var ville = listeVilles[n];
+                $('<option/>')
+                    .attr('value', ville)
+                    .text(ville)
+                    .appendTo(elem);
+            }
+
+            $('<option/>')
+                .attr('value', '')
+                .text('Autre...')
+                .appendTo(elem);
+        }
+        else if (dstElem.prop('tagName') == 'SELECT') {
+            var val = dstElem.val();
+            var parent = dstElem.parent();
+            parent.find('.city-input').remove();
+
+            $('<input/>')
+                .addClass('form-control')
+                .attr('name', dstElem.attr('name'))
+                .attr('id', dstElem.attr('id'))
+                .prependTo(parent);
+        }
+    }
+
+    paysNaissanceSelect.on('change', function() {
+        majChampsVille(paysNaissanceSelect, '#id_ville_naissance');
+    });
+
+    paysResidenceSelect.on('change', function() {
+        majChampsVille(paysResidenceSelect, '#id_ville_residence');
+    });
+
+    majChampsVille(paysNaissanceSelect, '#id_ville_naissance');
+    majChampsVille(paysResidenceSelect, '#id_ville_residence');
+
+    // Champs "autre" des villes
+    function majVilleAutre(elem) {
+        var parent = elem.parent();
+
+        if (elem.val() == '') {
+            var otherElem = $('<input/>')
+                .attr('placeholder', 'Veuillez indiquer...')
+                .attr('name', elem.attr('name'))
+                .prop('required', true)
+                .addClass('form-control')
+                .addClass('ville-autre-input')
+                .appendTo(parent);
+
+            elem.attr('name', elem.attr('name') + '_selector');
+        }
+        else {
+            var otherElem = parent.find('.ville-autre-input');
+            elem.attr('name', otherElem.attr('name'));
+            otherElem.remove();
+        }
+    }
+
+    $('.application-form').on('change', '.city-selector', function() {
+        majVilleAutre($(this));
+    });
+
+    $('.city-selector').each(function() {
+        majVilleAutre($(this));
+    });
 };

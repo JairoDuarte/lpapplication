@@ -26,7 +26,6 @@ article.cover .description a.fancy-link {
     text-transform: uppercase;
     font-size: 1.2em;
     border-bottom: 1px dotted #FFF;
-    /*text-decoration: none;*/
 }
 
 h1 {
@@ -120,6 +119,7 @@ h2 {
        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
           transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+
 .small-container input:focus {
   border-color: #66afe9;
   outline: 0;
@@ -139,4 +139,8 @@ footer .container {
     border-right: none !important;
     border-radius: 0 !important;
     margin-bottom: 0 !important;
+}
+
+.ville-autre-input {
+    margin-top: 5px;
 }

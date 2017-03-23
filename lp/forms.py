@@ -56,7 +56,7 @@ class CandidatForm(forms.ModelForm):
         min_annee_diplome = current_year - settings.age_bac_max + 2
         min_annee_bac = current_year - settings.age_bac_max
         # Make default inputs
-        countries_input = widgets.Select(choices=Countries.choices())
+        countries_input = widgets.Select(choices=Countries.CHOICES)
         mark_input = widgets.NumberInput(attrs={'step': '0.01', 'min': '0', 'max': '20'})
         # Set default inputs
         self.fields['nationalite'].widget = countries_input
@@ -126,9 +126,18 @@ class CandidatForm(forms.ModelForm):
             ]
             filieres.append('"%i": {"label": "%s", "diplomes": [%s], "filieres": [%s], "options": [%s]}' % (filiere.pk, filiere.libelle, ','.join(types_diplome), ','.join(filieres_diplome), ','.join(options_diplome)))
         filieres_json = '{%s}' % ','.join(filieres)
+        # Préarer la list des villes
+        villes_set = models.Ville.objects.order_by('nom').all()
+        villes_map = {}
+        for ville in villes_set:
+            if ville.pays not in villes_map:
+                villes_map[ville.pays] = []
+            villes_map[ville.pays].append(ville.nom)
+        villes_json = '{%s}' % (', '.join([('"%s": [%s]' % (pays, ', '.join(['"%s"' % ville for ville in villes]))) for pays, villes in villes_map.items()]))
         return {
             'arbre_diplome_json': arbre_diplome_json,
             'filieres_json': filieres_json,
+            'villes_json': villes_json,
             'type_diplome': form_type_diplome or '',
             'filiere_diplome': form_filiere_diplome or '',
             'option_diplome': form_option_diplome or '',
@@ -365,7 +374,7 @@ class CandidatForm(forms.ModelForm):
         model = models.Candidat
         exclude = ['user', 'jeton_validation', 'note_preselection', 'type_diplome', 'type_bac', 'filiere_diplome', 'option_diplome', 'filiere_choisie']
     fieldsets = (
-        ('Informations personnelles', ('cin', 'cne', 'nom', 'prenom', 'nationalite', 'ville_naissance', 'pays_naissance', 'date_naissance', 'email', 'telephone_gsm', 'telephone_fixe', 'adresse_residence', 'ville_residence', 'pays_residence',)),
+        ('Informations personnelles', ('cin', 'cne', 'nom', 'prenom', 'nationalite', 'pays_naissance', 'ville_naissance', 'date_naissance', 'email', 'telephone_gsm', 'telephone_fixe', 'pays_residence', 'ville_residence', 'adresse_residence',)),
         ('Informations sur le diplôme', None,),
         ('__double__', ('note_s1', 'annee_s1', 'note_s2', 'annee_s2',)),
         ('__single__', ('note_a1',)),

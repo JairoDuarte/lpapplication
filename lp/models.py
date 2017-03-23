@@ -55,6 +55,10 @@ class Settings(models.Model):
     age_max = models.PositiveSmallIntegerField('âge max.', default=25)
     age_bac_max = models.PositiveSmallIntegerField('âge max. du bac', default=4)
 
+class Ville(models.Model):
+    nom = models.CharField(max_length=100)
+    pays = models.CharField(max_length=100)
+
 class BaremeAge(models.Model):
     age_max = models.PositiveSmallIntegerField('âge max.', unique=True)
     note_preselection = models.DecimalField('note de préselection', max_digits=4, decimal_places=2)
