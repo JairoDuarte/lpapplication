@@ -105,9 +105,11 @@ def confirm_email(request):
             request.session['email_confirme_candidat'] = candidat.pk
             messages.info(request, 'Email confirmé avec succès')
             return HttpResponseRedirect(reverse('lp:set_password'))
-    else:
-        messages.error(request, 'Lien de validation invalide.')
-        return HttpResponseRedirect(reverse('lp:index'))
+        else:
+            messages.error(request, 'Lien de validation invalide.')
+            return HttpResponseRedirect(reverse('lp:index'))
+    # Affichage
+    return render(request, 'lp/confirm_email.html', {})
 
 def set_password(request):
     # On redirige l'utilsateur si déjà connecté
@@ -132,6 +134,8 @@ def set_password(request):
             candidat.user = user
             candidat.jeton_validation = None
             candidat.save()
+            # On supprime les autres candidats avec le même CIN et CNE
+            models.Candidat.objects.filter(cne=candidat.cne, cin=candidat.cin, user__isnull=True).delete()
             # On supprime les données de session
             del request.session['email_confirme_candidat']
             # On redirige vers la page de connexion

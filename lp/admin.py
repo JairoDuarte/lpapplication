@@ -79,7 +79,7 @@ class CandidatAdmin(admin.ModelAdmin):
     Panneau d'administration de candidats
     """
     form = CandidatForm
-    list_display = ('short_cin', 'short_cne', 'nom', 'prenom', 'note_preselection', 'short_filiere',)
+    list_display = ('short_cin', 'short_cne', 'nom', 'prenom', 'note_preselection', 'short_filiere', 'email_valide',)
     change_form_template = 'admin/change_form_candidat.html'
     list_filter = ('filiere_choisie',)
     search_fields = ('cne', 'cin', 'nom', 'prenom',)

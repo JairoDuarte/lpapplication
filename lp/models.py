@@ -142,8 +142,8 @@ class Candidat(models.Model):
         (1, 'Un redoublement'),
         (2, 'Deux redoublements ou plus...'),
     )
-    cin = models.CharField("code d'Identification National (CIN)", max_length=50, unique=True)
-    cne = models.CharField("code National d'Étudiant (CNE)", max_length=50, unique=True)
+    cin = models.CharField("code d'Identification National (CIN)", max_length=50)
+    cne = models.CharField("code National d'Étudiant (CNE)", max_length=50)
     nom = models.CharField(max_length=100)
     prenom = models.CharField('prénom', max_length=100)
     nationalite = models.CharField('nationalité', max_length=100)
@@ -151,7 +151,7 @@ class Candidat(models.Model):
     pays_naissance = models.CharField('pays de naissance', max_length=100)
     date_naissance = models.DateField('date de naissance')
     email = models.CharField(max_length=80, unique=True)
-    telephone_gsm = models.CharField('no. de téléphone GSM', max_length=20, unique=True)
+    telephone_gsm = models.CharField('no. de téléphone GSM', max_length=20)
     telephone_fixe = models.CharField('no. de téléphone fixe', max_length=20, blank=True)
     adresse_residence = models.CharField('adresse de résidence', max_length=255)
     ville_residence = models.CharField('ville de résidence', max_length=100)
@@ -265,5 +265,10 @@ class Candidat(models.Model):
                 note_validation = bareme_annee.note_preselection
                 break
         return note_validation
+    def email_valide(self):
+        return self.user != None
+    email_valide.admin_order_field = 'user'
+    email_valide.short_description = 'Email valide?'
+    email_valide.boolean = True
     def __str__(self):
         return self.prenom + ' ' + self.nom

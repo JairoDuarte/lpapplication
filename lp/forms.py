@@ -168,6 +168,22 @@ class CandidatForm(forms.ModelForm):
         except:
             raise forms.ValidationError('Valeur invalide')
         return annee
+    def clean_cin(self):
+        cin = self.cleaned_data.get('cin')
+        if self.instance and self.instance.cin == cin:
+            return cin
+        candidat_set = models.Candidat.objects.filter(cin=cin, user__isnull=False)
+        if len(candidat_set) > 0:
+            raise forms.ValidationError('Un candidat avec le même CIN existe déjà')
+        return cin
+    def clean_cne(self):
+        cne = self.cleaned_data.get('cne')
+        if self.instance and self.instance.cne == cne:
+            return cne
+        candidat_set = models.Candidat.objects.filter(cne=cne, user__isnull=False)
+        if len(candidat_set) > 0:
+            raise forms.ValidationError('Un candidat avec le même CNE existe déjà')
+        return cne
     def clean_nationalite(self):
         return self.__verifier_pays(self.cleaned_data.get('nationalite'))
     def clean_pays_naissance(self):
