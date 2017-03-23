@@ -4,7 +4,7 @@
 
 {% block breadcrumb %}
     <div class="text-right">
-        Connecté en tant que <a href="{% url 'lp:panel' %}">XXX</a> | <a href="{% url 'lp:password_change'%}">Changer le Mot de passe</a> | <a href="{% url 'lp:logout'%}">Se déconnecter</a>
+        Connecté en tant que <a href="{% url 'lp:panel' %}">{{ email }}</a> | <a href="{% url 'lp:password_change'%}">Changer le Mot de passe</a> | <a href="{% url 'lp:logout'%}">Se déconnecter</a>
     </div>
 {% endblock breadcrumb %}
 

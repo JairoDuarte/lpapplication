@@ -167,14 +167,20 @@ def panel(request):
     else:
         form = CandidatChangeForm(instance=candidat)
     context = form.context_data()
-    context.update(form=form)
+    context.update(form=form, email=user.email)
     # On affiche
     return render(request, 'lp/panel.html', context)
 
 def logout(request):
-    auth_views.logout(request)
-    messages.info(request, 'Déconnecté avec succès')
+    if not request.user.is_anonymous:
+        auth_views.logout(request)
+        messages.info(request, 'Déconnecté avec succès')
     return HttpResponseRedirect(reverse('lp:index'))
+
+def password_change(request):
+    return auth_views.password_change(request, template_name='lp/password_change.html', extra_context={
+        'email': request.user.email
+    })
 
 def password_change_done(request):
     auth_views.password_change_done(request)
