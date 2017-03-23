@@ -23,15 +23,6 @@ class SettingsForm(forms.ModelForm):
             raise forms.ValidationError('Âge maximal du Bac doit être supérieur ou égale à 2')
         return age
 
-class EmailForm(forms.Form):
-    email = forms.EmailField()
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        candidat = models.Candidat.objects.filter(email=email)
-        if len(candidat) == 0:
-            raise forms.ValidationError("Aucun candidat n'existe avec l'adresse email fournie")
-        return email
-
 class PasswordForm(forms.Form):
     password = forms.CharField(min_length=6, widget=forms.PasswordInput)
     password_confirm = forms.CharField(min_length=6, widget=forms.PasswordInput)
@@ -65,7 +56,7 @@ class CandidatForm(forms.ModelForm):
         min_annee_diplome = current_year - settings.age_bac_max + 2
         min_annee_bac = current_year - settings.age_bac_max
         # Make default inputs
-        countries_input = widgets.Select(choices=Countries.LIST)
+        countries_input = widgets.Select(choices=Countries.choices())
         mark_input = widgets.NumberInput(attrs={'step': '0.01', 'min': '0', 'max': '20'})
         # Set default inputs
         self.fields['nationalite'].widget = countries_input
@@ -144,8 +135,7 @@ class CandidatForm(forms.ModelForm):
             'filiere_choisie': form_filiere_choisie or '',
         }
     def __verifier_pays(self, pays):
-        liste_pays = [pays_id for pays_id, pays_nom in Countries.LIST]
-        if pays and (pays not in liste_pays):
+        if pays and (pays not in Countries.LIST):
             raise forms.ValidationError('Valeur invalide')
         return pays
     def __verifier_note(self, note):
@@ -342,6 +332,9 @@ class CandidatForm(forms.ModelForm):
         # Ajout de type de bac
         id_type_bac = self.cleaned_data.get('type_bac')
         candidat.type_bac = None if id_type_bac in ['', '-1'] else models.TypeBac.objects.get(pk=id_type_bac)
+        # Ajout de filière choisie
+        id_filiere_choisie = self.cleaned_data.get('filiere_choisie')
+        candidat.filiere_choisie = models.Filiere.objects.get(pk=id_filiere_choisie)
         # Calculer la note de préselection
         candidat.note_preselection = \
             Decimal('0.25') * candidat.note_a1 + \

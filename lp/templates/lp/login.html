@@ -1,13 +1,23 @@
-{% extends 'lp/base.html' %}
+{% extends 'lp/site_base.html' %}
 
 {% block page_title %}{{ block.super }} :: Connexion{% endblock page_title %}
 
-{% block content %}
+{% block breadcrumb %}
+    {{ block.super }} » <a href="{% url 'lp:login' %}">Connexion</a>
+{% endblock breadcrumb %}
+
+{% block sitecontent %}
+<div class="container login-container small-container">
     <h1>Connexion</h1>
-    <form method="post">
+    <form method="post" class="form-vertical">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Connexion</button>
+        <div class="form-group">
+            {{ form.as_p }}
+            <a href="{% url 'lp:password_reset' %}">Mot de passe oublié?</a>
+        </div>
+        <p class="form-group text-right">
+            <button type="submit" class="btn btn-lg btn-primary">Se connecter »</button>
+        </p>
     </form>
-    <a href="{% url 'lp:password_reset' %}">Mot de passe oublié?</a>
-{% endblock content %}
+</div>
+{% endblock sitecontent %}

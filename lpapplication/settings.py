@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 from configparser import RawConfigParser
+from django.contrib.messages import constants as message_constants
 
 config = RawConfigParser()
 config.read('config.ini')
@@ -142,3 +143,11 @@ EMAIL_PORT = config.get('email', 'EMAIL_PORT')
 AUTH_USER_MODEL = 'lp.user'
 
 LOGIN_REDIRECT_URL = '/'
+
+MESSAGE_TAGS = {
+    message_constants.DEBUG: 'debug',
+    message_constants.INFO: 'info',
+    message_constants.SUCCESS: 'success',
+    message_constants.WARNING: 'warning',
+    message_constants.ERROR: 'danger',
+}

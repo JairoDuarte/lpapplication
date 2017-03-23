@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
 from . import models as m
+from .utils import Countries
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -191,6 +192,57 @@ class Candidat(models.Model):
         return filiere.libelle_court if len(filiere.libelle_court) != 0 else filiere.libelle
     short_filiere.admin_order_field = 'filiere_choisie'
     short_filiere.short_description = 'Filière choisie'
+    def afficher_nationalite(self):
+        return Countries.LIST[self.nationalite]
+    def afficher_pays_naissance(self):
+        return Countries.LIST[self.pays_naissance]
+    def afficher_pays_residence(self):
+        return Countries.LIST[self.pays_residence]
+    def afficher_date_naissance(self):
+        mois = [
+            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
+            'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+        ]
+        date = self.date_naissance
+        return str(date.day) + ' ' + mois[date.month - 1] + ' ' + str(date.year)
+    def afficher_telephone_fixe(self):
+        if self.telephone_fixe and self.telephone_fixe != '':
+            return self.telephone_fixe
+        return 'Aucun'
+    def afficher_annee_s1(self):
+        annee = self.annee_s1
+        return str(annee - 1) + '/' + str(annee)
+    def afficher_annee_s2(self):
+        annee = self.annee_s2
+        return str(annee - 1) + '/' + str(annee)
+    def afficher_annee_s3(self):
+        annee = self.annee_s3
+        return str(annee - 1) + '/' + str(annee)
+    def afficher_annee_s4(self):
+        annee = self.annee_s4
+        return str(annee - 1) + '/' + str(annee)
+    def afficher_nb_redoublements(self):
+        labels = {
+            0: 'Sans redoublement',
+            1: 'Un redoublement',
+            2: 'Deux redoublements ou plus...',
+        }
+        return labels[self.nb_redoublements]
+    def afficher_type_diplome(self):
+        return self.type_diplome.libelle if self.type_diplome else self.type_diplome_autre
+    def afficher_filiere_diplome(self):
+        return self.filiere_diplome.libelle if self.filiere_diplome else 'Aucune'
+    def afficher_option_diplome(self):
+        return self.option_diplome.libelle if self.option_diplome else 'Aucune'
+    def afficher_type_bac(self):
+        return self.type_bac.libelle if self.type_bac else self.type_bac_autre
+    def afficher_annee_bac(self):
+        annee = self.annee_bac
+        return str(annee - 1) + '/' + str(annee)
+    def afficher_mention_bac(self):
+        return self.mention_bac.libelle
+    def afficher_filiere_choisie(self):
+        return self.filiere_choisie.libelle if self.filiere_choisie else 'Aucune'
     def age(self):
         now = timezone.now()
         born = self.date_naissance

@@ -1,13 +1,28 @@
-{% extends "lp/base.html" %}
+{% extends "lp/apply.html" %}
 
-{% block content %}
-{% if invalid_link %}
-    <p>Le lien de validation d'email est invalide</p>
-{% endif %}
-<h1>Réenvoyer l'email de confirmation</h1>
-<form method="post" action="{% url 'lp:confirm_email' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Envoyer</button>
-</form>
-{% endblock content %}
+{% block breadcrumb %}
+    {{ block.super }} » <a href="{% url 'lp:confirm_email' %}">Confirmation d'email</a>
+{% endblock breadcrumb %}
+
+{% block sitecontent %}
+<div class="container confirm-email-container">
+    <h1>Réenvoyer l'email de confirmation</h1>
+    <div class="panel panel-default">
+        <form class="form-horizontal panel-body" method="post">
+            {% csrf_token %}
+            <div class="field-email form-group">
+                <p>Vous pouvez utiliser le formulaire ci-dessus pour recevoir un nouvel email de confirmation au cas où vous n'en avez pas réçu.</p>
+                <label class="col-sm-4 control-label" for="id_email">Email :</label>
+                <div class="widget col-sm-8"><input class="form-control" type="email" name="email" id="id_email"></div>
+            </div>
+            <p class="text-right">
+                <button type="submit" class="btn btn-lg btn-primary">Envoyer</button>
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock sitecontent %}
+
+{% block extra_js %}
+{# Nothing in here #}
+{% endblock extra_js %}

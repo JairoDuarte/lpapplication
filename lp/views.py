@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_views
 from django.core.mail import send_mail
 from django.template import loader
 
-from .forms import SettingsForm, CandidatForm, CandidatChangeForm, EmailForm, PasswordForm
+from .forms import SettingsForm, CandidatForm, CandidatChangeForm, PasswordForm
 from .utils import lp_settings, filter_login
 from . import models
 
@@ -48,14 +48,9 @@ def apply(request):
         else:
             form = CandidatForm()
     # Préparer le contexte
-    session_expired_error = None
-    if 'session_expired_error' in request.session:
-        session_expired_error = 'Votre session a expirée'
-        del request.session['session_expired_error']
     context = form.context_data()
     context.update({
-        'form': form,
-        'session_expired_error': session_expired_error
+        'form': form
     })
     # Afficher
     return render(request, 'lp/apply.html', context)
@@ -67,7 +62,7 @@ def confirm(request):
         return response
     # On essaye de récupérer le candidat de la session
     if 'candidat' not in request.session:
-        request.session['session_expired_error'] = True
+        messages.error(request, 'Votre session a expirée.')
         return HttpResponseRedirect(reverse('lp:apply'))
     candidat = request.session['candidat']
     candidat_form = CandidatForm(candidat)
@@ -88,21 +83,18 @@ def confirm(request):
         # On envoie l'email
         send_confirmation_email(candidat_instance.email, confirmation_token, request)
         # On affiche un message comme quoi on doit vérifier son email
-        messages.info(request, "Veuillez vérifier votre boîte email pour confirmer votre adresse email")
+        messages.info(request, "Veuillez vérifier votre boîte email pour confirmer votre adresse email.")
         # Puis on redirige vers la page de confirmation d'email
-        return HttpResponseRedirect(reverse('lp:confirm_email'))
+        return HttpResponseRedirect(reverse('lp:login'))
     # On affiche la page
     return render(request, 'lp/confirm.html', {
         'candidat': candidat_instance
     })
-
 def confirm_email(request):
     # On redirige l'utilsateur si déjà connecté
     response = filter_login(request)
     if response:
         return response
-    # On prépare le context
-    context = {}
     # On vérifie le jeton de validation donné comme paramètre
     if 'token' in request.GET:
         token = request.GET['token']
@@ -113,26 +105,9 @@ def confirm_email(request):
             request.session['email_confirme_candidat'] = candidat.pk
             messages.info(request, 'Email confirmé avec succès')
             return HttpResponseRedirect(reverse('lp:set_password'))
-        else:
-            context.update(invalid_link=True)
-    # Traiter les données entrantes
-    if request.method == 'POST':
-        form = EmailForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            candidat = models.Candidat.objects.filter(email=email)[0]
-            # On envoit l'email
-            token = candidat.jeton_validation
-            send_confirmation_email(email, token, request)
-            # On affiche un message comme quoi on doit vérifier son email
-            messages.info(request, "Veuillez vérifier votre boîte email pour confirmer votre adresse email")
-            # On redirige vers cette même page
-            return HttpResponseRedirect(reverse('lp:confirm_email'))
     else:
-        form = EmailForm()
-    context.update({'form': form})
-    # On affiche
-    return render(request, 'lp/confirm_email.html', context)
+        messages.error(request, 'Lien de validation invalide.')
+        return HttpResponseRedirect(reverse('lp:index'))
 
 def set_password(request):
     # On redirige l'utilsateur si déjà connecté

@@ -2,12 +2,13 @@
 {% load static %}
 
 {% block breadcrumb %}
-    {{ block.super }} » <a href="{% url 'lp:apply' }}">Inscription</a>
+    {{ block.super }} » <a href="{% url 'lp:apply' %}">Inscription</a>
 {% endblock breadcrumb %}
+
 {% block sitecontent %}
 <div class="container application-container">
     <h1>Préinscription à la Licence Professionelle</h1>
-    <form method="post" class="form-horizontal preinscription-form panel-body">
+    <form method="post" class="form-horizontal application-form panel-body">
         {% csrf_token %}
         {{ form|safe }}
         <p class="text-right"><button type="submit" class="btn btn-lg btn-primary">Confirmer</button></p>

@@ -9,10 +9,10 @@
 
     <title>{% block page_title %}Inscription LP{% endblock page_title %}</title>
 
-    {# Main style #}
-    <link rel="stylesheet" href="{% static 'lp/css/style.css' %}">
     {# Bootstrap #}
     <link rel="stylesheet" type="text/css" href="{% static 'lp/css/bootstrap.min.css' %}">
+    {# Main style #}
+    <link rel="stylesheet" href="{% static 'lp/css/style.css' %}">
 
     {% block extra_css %}{% endblock extra_css %}
 </head>
@@ -26,18 +26,20 @@
     </header>
     {% block flashmessages %}
         {% if messages %}
-        <ul class="messages">
-            {% for msg in messages %}       
-            <li>
-                <div class="alert alert-{{msg.level_tag}}" role="alert">
-            {{msg.message}}
-            </div>
-            </li>
+            {% for msg in messages %}
+                <div class="alert alert-{{ msg.level_tag }}" role="alert">
+                    <div class="container">{{ msg.message }}</div>
+                </div>
             {% endfor %}
-        </ul>
         {% endif %}
     {% endblock flashmessages %}
     {% block content %} {% endblock content %}
+    <footer>
+        <div class="container text-right">
+            <p>© École Supérieure de Technologie de Casablanca</p>
+            <p>Développé par Dermoumi Saïd - Département Informatique</p>
+        </div>
+    </footer>
 </div>
 {% block javascript %}
 {# jQuery #}

@@ -4,11 +4,13 @@
 {% block page_title %}{{ block.super }} :: Changement du mot de passe{% endblock page_title %}
 
 {% block panelcontent %}
-<form method="post">
-    {% csrf_token %}
-    {{ form|safe }}
-    <button type="submit">Envoyer</button>
-</form>
+<div class="container application-container">
+    <form method="post" class="form-horizontal application-form panel-body">
+        {% csrf_token %}
+        {{ form|safe }}
+        <p class="text-right"><button type="submit" class="btn btn-lg btn-primary">Enregistrer</button></p>
+    </form>
+</div>
 {% endblock panelcontent %}
 
 {% block extra_js %}

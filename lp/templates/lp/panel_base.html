@@ -1,12 +1,15 @@
-{% extends 'lp/base.html' %}
+{% extends 'lp/site_base.html' %}
 
 {% block page_title %}{{ block.super }} :: Candidat{% endblock page_title %}
 
-{% block content %}
-Panel<br/>
-<a href="{% url 'lp:password_change'%}">Changer le Mot de passe</a><br/>
-<a href="{% url 'lp:logout'%}">Logout</a><br/>
+{% block breadcrumb %}
+    <div class="text-right">
+        Connecté en tant que <a href="{% url 'lp:panel' %}">XXX</a> | <a href="{% url 'lp:password_change'%}">Changer le Mot de passe</a> | <a href="{% url 'lp:logout'%}">Se déconnecter</a>
+    </div>
+{% endblock breadcrumb %}
+
+{% block sitecontent %}
 {% block panelcontent %}
     Content
 {% endblock panelcontent %}
-{% endblock content %}
+{% endblock sitecontent %}

@@ -1,15 +1,150 @@
-{% extends "lp/base.html" %}
+{% extends "lp/apply.html" %}
 
-{% block content %}
-<div class="container">
-    <div class="signup-container panel panel-default">
-        <h1 class="panel-heading">Formulaire de préinscription</h1>
-        <form method="post" class="form-horizontal preinscription-form panel-body">
-            {% csrf_token %}
-            {{ candidat.cin }}<br/>
-            {{ candidat.filiere_choisie.libelle }}
-            <p class="text-right"><button type="submit">Confirmer</button></p>
-        </form>
-    </div>
+{% block breadcrumb %}
+    {{ block.super }} » <a href="{% url 'lp:confirm' }}">Confirmation</a>
+{% endblock breadcrumb %}
+
+{% block sitecontent %}
+<div class="container confirm-page-container">
+    <h1>Confirmation de données</h1>
+    <form method="post" class="form-horizontal application-form">
+        {% csrf_token %}
+        <h2>Informations personnelles</h2>
+        <div class="field-cin form-group">
+            <label class="col-sm-4 control-label" for="id_cin">Code d'Identification National (CIN) :</label>
+            <div class="widget col-sm-8">{{ candidat.cin }}</div>
+        </div>
+        <div class="field-cne form-group">
+            <label class="col-sm-4 control-label" for="id_cne">Code National d'Étudiant (CNE) :</label>
+            <div class="widget col-sm-8">{{ candidat.cne }}</div>
+        </div>
+        <div class="field-nom form-group">
+            <label class="col-sm-4 control-label" for="id_nom">Nom :</label>
+            <div class="widget col-sm-8">{{ candidat.nom }}</div>
+        </div>
+        <div class="field-prenom form-group">
+            <label class="col-sm-4 control-label" for="id_prenom">Prénom :</label>
+            <div class="widget col-sm-8">{{ candidat.prenom }}</div>
+        </div>
+        <div class="field-nationalite form-group">
+            <label class="col-sm-4 control-label" for="id_nationalite">Nationalité :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_nationalite }}</div>
+        </div>
+        <div class="field-ville_naissance form-group">
+            <label class="col-sm-4 control-label" for="id_ville_naissance">Ville de naissance :</label>
+            <div class="widget col-sm-8">{{ candidat.ville_naissance }}</div>
+        </div>
+        <div class="field-pays_naissance form-group">
+            <label class="col-sm-4 control-label" for="id_pays_naissance">Pays de naissance :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_pays_naissance }}</div>
+        </div>
+        <div class="field-date_naissance form-group">
+            <label class="col-sm-4 control-label" for="id_date_naissance_0">Date de naissance :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_date_naissance }}</div>
+        </div>
+        <div class="field-email form-group">
+            <label class="col-sm-4 control-label" for="id_email">Email :</label>
+            <div class="widget col-sm-8">{{ candidat.email }}</div>
+        </div>
+        <div class="field-telephone_gsm form-group">
+            <label class="col-sm-4 control-label" for="id_telephone_gsm">No. de téléphone GSM :</label>
+            <div class="widget col-sm-8">{{ candidat.telephone_gsm }}</div>
+        </div>
+        <div class="field-telephone_fixe form-group">
+            <label class="col-sm-4 control-label" for="id_telephone_fixe">No. de téléphone fixe :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_telephone_fixe }}</div>
+        </div>
+        <div class="field-adresse_residence form-group">
+            <label class="col-sm-4 control-label" for="id_adresse_residence">Adresse de résidence :</label>
+            <div class="widget col-sm-8">{{ candidat.adresse_residence }}</div>
+        </div>
+        <div class="field-ville_residence form-group">
+            <label class="col-sm-4 control-label" for="id_ville_residence">Ville de résidence :</label>
+            <div class="widget col-sm-8">{{ candidat.ville_residence }}</div>
+        </div>
+        <div class="field-pays_residence form-group">
+            <label class="col-sm-4 control-label" for="id_pays_residence">Pays de résidence :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_pays_residence }}</div>
+        </div>
+        <h2>Informations sur le diplôme</h2>
+        <div class="field-note_s1 form-group">
+            <label class="col-sm-4 col-md-4 control-label" for="id_note_s1">Note S1 :</label>
+            <div class="col-sm-8 col-md-2">{{ candidat.note_s1 }}</div>
+            <label class="col-sm-4 col-md-4 control-label" for="id_annee_s1">Année S1 :</label>
+            <div class="col-sm-8 col-md-2">{{ candidat.afficher_annee_s1 }}</div>
+        </div>
+        <div class="field-note_s2 form-group">
+            <label class="col-sm-4 col-md-4 control-label" for="id_note_s2">Note S2 :</label>
+            <div class="col-sm-8 col-md-2">{{ candidat.note_s2 }}</div>
+            <label class="col-sm-4 col-md-4 control-label" for="id_annee_s2">Année S2 :</label>
+            <div class="col-sm-8 col-md-2">{{ candidat.afficher_annee_s2 }}</div>
+        </div>
+        <div class="field-note_a1 form-group">
+            <label class="col-sm-4 control-label" for="id_note_a1">Note de la première année :</label>
+            <div class="widget col-sm-8">{{ candidat.note_a1 }}</div>
+        </div>
+        <div class="field-note_s3 form-group">
+            <label class="col-sm-4 col-md-4 control-label" for="id_note_s3">Note S3 :</label>
+            <div class="col-sm-8 col-md-2">{{ candidat.note_s3 }}</div>
+            <label class="col-sm-4 col-md-4 control-label" for="id_annee_s3">Année S3 :</label>
+            <div class="col-sm-8 col-md-2">{{ candidat.afficher_annee_s3 }}</div>
+        </div>
+        <div class="field-note_s4 form-group">
+            <label class="col-sm-4 col-md-4 control-label" for="id_note_s4">Note S4 :</label>
+            <div class="col-sm-8 col-md-2">{{ candidat.note_s4 }}</div>
+            <label class="col-sm-4 col-md-4 control-label" for="id_annee_s4">Année S4 :</label>
+            <div class="col-sm-8 col-md-2">{{ candidat.afficher_annee_s4 }}</div>
+        </div>
+        <div class="field-note_a2 form-group">
+            <label class="col-sm-4 control-label" for="id_note_a2">Note de la deuxième année :</label>
+            <div class="widget col-sm-8">{{ candidat.note_a2 }}</div>
+        </div>
+        <div class="field-nb_redoublements form-group">
+            <label class="col-sm-4 control-label" for="id_nb_redoublements">Nombre de redoublements :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_nb_redoublements }}</div>
+        </div>
+        <div class="field-type_diplome form-group">
+            <label class="col-sm-4 control-label" for="id_type_diplome">Type diplome :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_type_diplome }}</div>
+        </div>
+        {% if candidat.filiere_diplome %}
+        <div class="field-filiere_diplome form-group">
+            <label class="col-sm-4 control-label" for="id_filiere_diplome">Filiere diplome :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_filiere_diplome }}</div>
+        </div>
+        {% if candidat.option_diplome %}
+        <div class="field-option_diplome form-group">
+            <label class="col-sm-4 control-label" for="id_option_diplome">Option diplome :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_option_diplome }}</div>
+        </div>
+        {% endif %}
+        {% endif %}
+        <h2>Informations sur le Bac</h2>
+        <div class="field-type_bac form-group">
+            <label class="col-sm-4 control-label" for="id_type_bac">Type bac :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_type_bac }}</div>
+        </div>
+        <div class="field-annee_bac form-group">
+            <label class="col-sm-4 control-label" for="id_annee_bac">Année d'obtention du bac :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_annee_bac }}</div>
+        </div>
+        <div class="field-mention_bac form-group">
+            <label class="col-sm-4 control-label" for="id_mention_bac">Mention du Bac :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_mention_bac }}</div>
+        </div>
+        <h2>Informations sur la filière</h2>
+        <div class="field-filiere_choisie form-group">
+            <label class="col-sm-4 control-label" for="id_filiere_choisie">Filiere choisie :</label>
+            <div class="widget col-sm-8">{{ candidat.afficher_filiere_choisie }}</div>
+        </div>
+        <p class="text-right">
+            <a href="{% url 'lp:apply' %}" class="btn btn-lg btn-link go-back" onclick="window.history.back();">« Revenir</a>
+            <button type="submit" class="btn btn-lg btn-primary">Confirmer</button>
+        </p>
+    </form>
 </div>
-{% endblock content %}
+{% endblock sitecontent %}
+
+{% block extra_js %}
+{# Nothing to do #}
+{% endblock extra_js %}
