@@ -321,7 +321,15 @@ class CandidatForm(forms.ModelForm):
                             fieldname2 = fields[i + 1]
                             field2 = self[fieldname2]
                             has_errors = 'has-error' if (len(field.errors) > 0 or len(field2.errors) > 0) else ''
-                            html += '<div class="field-%s form-group %s"><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div>' % (fieldname, has_errors, field.id_for_label, field.label, field.as_widget(attrs={'class': 'form-control'}), field2.id_for_label, field2.label, field2.as_widget(attrs={'class': 'form-control'}))
+                            widget1 = field.as_widget(attrs={
+                                'class': 'form-control',
+                                'placeholder': '' if field.field.required else '(Optionnel)'
+                            })
+                            widget2 = field2.as_widget(attrs={
+                                'class': 'form-control',
+                                'placeholder': '' if field2.field.required else '(Optionnel)'
+                            })
+                            html += '<div class="field-%s form-group %s"><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div>' % (fieldname, has_errors, field.id_for_label, field.label, widget1, field2.id_for_label, field2.label, widget2)
                             errors = field.errors
                             errors2 = field2.errors
                             if len(errors) > 0 or len(errors2) > 0:
@@ -335,7 +343,11 @@ class CandidatForm(forms.ModelForm):
                     else:
                         errors = field.errors
                         has_errors = 'has-error' if len(errors) > 0 else ''
-                        html += '<div class="field-%s form-group %s"><label class="col-sm-4 control-label" for="%s">%s :</label><div class="widget col-sm-8">%s</div>' % (fieldname, has_errors, field.id_for_label, field.label, field.as_widget(attrs={'class': 'form-control'}))
+                        widget = field.as_widget(attrs={
+                            'class': 'form-control',
+                            'placeholder': '' if field.field.required else '(Optionnel)'
+                        })
+                        html += '<div class="field-%s form-group %s"><label class="col-sm-4 control-label" for="%s">%s :</label><div class="widget col-sm-8">%s</div>' % (fieldname, has_errors, field.id_for_label, field.label, widget)
                         if len(errors) > 0:
                             html += '<div class="col-sm-8 col-sm-offset-4"><ul class="form-error">'
                             for error in errors:
