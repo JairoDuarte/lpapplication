@@ -320,28 +320,27 @@ class CandidatForm(forms.ModelForm):
                         if i % 2 == 0:
                             fieldname2 = fields[i + 1]
                             field2 = self[fieldname2]
-                            html += '<div class="field-%s form-group"><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div>' % (fieldname, field.id_for_label, field.label, field.as_widget(attrs={'class': 'form-control'}), field2.id_for_label, field2.label, field2.as_widget(attrs={'class': 'form-control'}))
+                            has_errors = 'has-error' if (len(field.errors) > 0 or len(field2.errors) > 0) else ''
+                            html += '<div class="field-%s form-group %s"><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div><label class="col-sm-4 col-md-4 control-label" for="%s">%s :</label><div class="col-sm-8 col-md-2">%s</div>' % (fieldname, has_errors, field.id_for_label, field.label, field.as_widget(attrs={'class': 'form-control'}), field2.id_for_label, field2.label, field2.as_widget(attrs={'class': 'form-control'}))
                             errors = field.errors
-                            if len(errors) > 0:
-                                html += '<ul class="errors">'
+                            errors2 = field2.errors
+                            if len(errors) > 0 or len(errors2) > 0:
+                                html += '<div class="col-sm-8 col-sm-offset-4"><ul class="form-error">'
                                 for error in errors:
                                     html += '<li>%s</li>' % error
-                                html += '</ul>'
-                            errors = field2.errors
-                            if len(errors) > 0:
-                                html += '<ul class="errors">'
-                                for error in errors:
-                                    html += '<li>%s</li>' % error
-                                html += '</ul>'
+                                for error in errors2:
+                                    html += '<li>%s</[li>' % error
+                                html += '</ul></div>'
                             html += '</div>'
                     else:
-                        html += '<div class="field-%s form-group"><label class="col-sm-4 control-label" for="%s">%s :</label><div class="widget col-sm-8">%s</div>' % (fieldname, field.id_for_label, field.label, field.as_widget(attrs={'class': 'form-control'}))
                         errors = field.errors
+                        has_errors = 'has-error' if len(errors) > 0 else ''
+                        html += '<div class="field-%s form-group %s"><label class="col-sm-4 control-label" for="%s">%s :</label><div class="widget col-sm-8">%s</div>' % (fieldname, has_errors, field.id_for_label, field.label, field.as_widget(attrs={'class': 'form-control'}))
                         if len(errors) > 0:
-                            html += '<ul class="errors">'
+                            html += '<div class="col-sm-8 col-sm-offset-4"><ul class="form-error">'
                             for error in errors:
                                 html += '<li>%s</li>' % error
-                            html += '</ul>'
+                            html += '</ul></div>'
                         html += '</div>'
         return mark_safe(html)
     def save(self, commit=True):

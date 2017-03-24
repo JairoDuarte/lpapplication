@@ -144,3 +144,14 @@ footer .container {
 .ville-autre-input {
     margin-top: 5px;
 }
+
+
+.application-form .form-error {
+    padding: 12px 30px;
+    color: #a94442;
+}
+
+.application-form .form-error.bg-danger {
+    border: 1px solid #a94442;
+    border-radius: 2px;
+}
