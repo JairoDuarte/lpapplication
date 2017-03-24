@@ -388,4 +388,6 @@ class CandidatForm(forms.ModelForm):
 class CandidatChangeForm(CandidatForm):
     def __init__(self, *args, **kwargs):
         super(CandidatChangeForm, self).__init__(*args, **kwargs)
+        self.fields['cin'].disabled = True
+        self.fields['cne'].disabled = True
         self.fields['email'].disabled = True
