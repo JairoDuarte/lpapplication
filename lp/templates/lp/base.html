@@ -20,8 +20,8 @@
 <div id="container">
     <header class="clear-fix">
         <div class="container">
-            <img src="{% static 'lp/img/logo-estc.png' %}" alt="École Supérieure de Technologie de Casablanca" class="pull-left"/>
-            <img src="{% static 'lp/img/logo-uh2c.png' %}" alt="Université Hassan II de Casablanca" class="pull-right"/>
+            <div class="col-xs-6"><img src="{% static 'lp/img/logo-estc.png' %}" alt="École Supérieure de Technologie de Casablanca"/></div>
+            <div class="col-xs-6 text-right"><img src="{% static 'lp/img/logo-uh2c.png' %}" alt="Université Hassan II de Casablanca"/></div>
         </div>
     </header>
     {% block flashmessages %}

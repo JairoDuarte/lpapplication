@@ -30,7 +30,7 @@ SECRET_KEY = config.get('secrets', 'SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config.get('debug', 'DEBUG')
 
-ALLOWED_HOSTS = ['192.168.137.1']
+ALLOWED_HOSTS = ['192.168.137.1', 'localhost']
 
 
 # Application definition
