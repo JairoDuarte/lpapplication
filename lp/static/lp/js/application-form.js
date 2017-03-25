@@ -217,13 +217,17 @@ window._initApplicationForm = window._initApplictaionForm || function(
     var villeNaissanceInputModel = $('#id_ville_naissance').clone(),
         villeResidenceInputModel = $('#id_ville_residence').clone();
 
+    var originalValue = {};
+
     function majChampsVille(src, dst) {
-        console.log('check');
         dstElem = $(dst);
+        if (originalValue[dst] === undefined)
+            originalValue[dst] = dstElem.val();
+
         var pays = src.val();
         var listeVilles = villes[pays];
 
-        if (listeVilles && dstElem.prop('tagName') != 'SELECT') {
+        if (listeVilles) {
             var val = dstElem.val();
             var parent = dstElem.parent();
             dstElem.remove();
@@ -236,23 +240,33 @@ window._initApplicationForm = window._initApplictaionForm || function(
                 .addClass('city-input')
                 .prependTo(parent);
 
+            var anOptionIsSelected = (originalValue[dst] !== undefined);
             for (var n in listeVilles) {
                 var ville = listeVilles[n];
-                $('<option/>')
+                var option = $('<option/>')
                     .attr('value', ville)
                     .text(ville)
                     .appendTo(elem);
+
+                if (ville == originalValue[dst]) {
+                    option.prop('selected', true);
+                    anOptionIsSelected = true;
+                    originalValue[dst] = '';
+                }
             }
 
             $('<option/>')
                 .attr('value', '')
                 .text('Autre...')
+                .prop('selected', !anOptionIsSelected)
                 .appendTo(elem);
+
+            majVilleAutre(elem);
         }
         else if (dstElem.prop('tagName') == 'SELECT') {
             var val = dstElem.val();
             var parent = dstElem.parent();
-            parent.find('.city-input').remove();
+            parent.find('.form-control').remove();
 
             $('<input/>')
                 .addClass('form-control')
@@ -275,18 +289,26 @@ window._initApplicationForm = window._initApplictaionForm || function(
 
     // Champs "autre" des villes
     function majVilleAutre(elem) {
+        var selector = '#' + elem.attr('id');
         var parent = elem.parent();
 
         if (elem.val() == '') {
-            var otherElem = $('<input/>')
-                .attr('placeholder', 'Veuillez indiquer...')
-                .attr('name', elem.attr('name'))
-                .prop('required', true)
-                .addClass('form-control')
-                .addClass('ville-autre-input')
-                .appendTo(parent);
+            if (parent.find('.ville-autre-input').length == 0) {
+                var otherElem = $('<input/>')
+                    .attr('placeholder', 'Veuillez indiquer...')
+                    .attr('name', elem.attr('name'))
+                    .prop('required', true)
+                    .addClass('form-control')
+                    .addClass('ville-autre-input')
+                    .appendTo(parent);
 
-            elem.attr('name', elem.attr('name') + '_selector');
+                if (originalValue[selector]) {
+                    otherElem.val(originalValue[selector]);
+                    originalValue[selector] = '';
+                }
+
+                elem.attr('name', elem.attr('name') + '_selector');
+            }
         }
         else {
             var otherElem = parent.find('.ville-autre-input');
